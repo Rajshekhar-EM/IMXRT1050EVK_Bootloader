@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;evkbimxrt1050_iled_blinky/Debug/evkbimxrt1050_iled_blinky.hex&apos;" deleteContents="false" description="Delete resource &apos;evkbimxrt1050_iled_blinky/Debug/evkbimxrt1050_iled_blinky.hex&apos;" element1="/evkbimxrt1050_iled_blinky/Debug/evkbimxrt1050_iled_blinky.hex" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1709799858760"/>
+</session>

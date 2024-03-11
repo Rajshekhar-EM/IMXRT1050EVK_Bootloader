@@ -1,0 +1,6 @@
+../source/flexspi_romapi.c:68:6:FLEXSPI_NorFlash_GetConfig	16	static
+../source/flexspi_romapi.c:277:6:error_trap	8	static
+../source/flexspi_romapi.c:290:6:app_finalize	8	static
+../source/flexspi_romapi.c:299:6:get_cache_status	16	static
+../source/flexspi_romapi.c:320:6:flexspi_nor_handle_cache	40	static
+../source/flexspi_romapi.c:364:5:main	40	static
