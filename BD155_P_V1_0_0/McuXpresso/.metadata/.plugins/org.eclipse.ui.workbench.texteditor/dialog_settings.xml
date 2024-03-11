@@ -6,8 +6,9 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="2_DAY"/>
+		<item key="selection" value=""/>
 		<list key="findhistory">
+			<item value="f_gets"/>
 			<item value="_DAY_Copy"/>
 			<item value="DAY_Copy"/>
 			<item value="NIGHT"/>
@@ -22,7 +23,6 @@
 			<item value="funcreadADCValues"/>
 			<item value="funcMax22190Device1Process"/>
 			<item value="funcWriteSpiMax22190"/>
-			<item value="funcProcessScreen"/>
 		</list>
 		<list key="replacehistory">
 			<item value="2_DAY"/>

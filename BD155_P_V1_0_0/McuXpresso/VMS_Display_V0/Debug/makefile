@@ -76,7 +76,7 @@ main-build: VMS_Display_V0.axf
 VMS_Display_V0.axf: $(OBJS) $(USER_OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -L"D:\RAJASHEKHAR\Github\IMXRT1050EVK_Bootloader\BD155_P_V1_0_0\McuXpresso\VMS_Display_V0\emwin\emWin_library\MCUXpresso" -Xlinker -Map="VMS_Display_V0.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m7 -mthumb -T VMS_Display_V0_Debug.ld -o "VMS_Display_V0.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -L"D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\VMS_Display_V0\emwin\emWin_library\MCUXpresso" -Xlinker -Map="VMS_Display_V0.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m7 -mthumb -T VMS_Display_V0_Debug.ld -o "VMS_Display_V0.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

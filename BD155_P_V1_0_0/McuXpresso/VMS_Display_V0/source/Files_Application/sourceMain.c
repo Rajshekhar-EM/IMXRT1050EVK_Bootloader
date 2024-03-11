@@ -517,8 +517,8 @@
 	    pendrive_filename = pendrive_filename_creation("DataLogging");
 	    error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
 	    */
-	    error = f_open(&g_fileObject1,_T("1:Display_app.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:Display_app.hex"), FA_READ | FA_OPEN_EXISTING);
+	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:led_without_header.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:main_task.hex"), FA_READ | FA_OPEN_EXISTING);
 
@@ -579,7 +579,7 @@
 					{
 						/*Data record*//*End of file record*/
 						gh = 9;
-						for(ij = 0; ij < no_bytes;ij++,gh+2,kg++)
+						for(ij = 0; ij < no_bytes;ij++,gh+=2,kg++)
 						{
 							temp_buffer[ij] = AsciiToDecimal(gh,2);
 							programable_buffer[kg] = temp_buffer[ij];
@@ -773,6 +773,7 @@
 					break;
 			case 2: Decimal_data  = (lineBuffer[starting_index] - 48)*10;
 					Decimal_data += (lineBuffer[starting_index+1] - 48);
+					Decimal_data = hexa2bcd_rtc(Decimal_data);
 					break;
 			case 3: Decimal_data  = (lineBuffer[starting_index] - 48)*100;
 					Decimal_data += (lineBuffer[starting_index+1] - 48)*10;
@@ -1740,7 +1741,8 @@ void Initialization(void)
 
 	USB_HostApplicationInit();
 
-	//HyperFlash();
+	HyperFlash();
+
 
 	app_finalize();
 
