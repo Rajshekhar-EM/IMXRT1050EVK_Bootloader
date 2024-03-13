@@ -13,9 +13,13 @@
 	    uint16_t hyper_sec_no = 0, gh = 0, ij = 0, kg = 0;
 	    uint8_t no_bytes = 0, record_type = 0;
 	    uint32_t address = 0;
-	    uint32_t Decimal_data = 0;
+	    uint32_t Decimal_data = 0,DecimalMSB = 0,DecimalLSB = 0;
+	    uint8_t data_temp = 0;
 	    uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits);
 	    uint8_t ASCII2HEX(uint8_t character);
+
+	    bool bl_pwr_on = 0;
+	    uint16_t bl_tm_cntr = 0;
 	/*******************************************************************************
 	 * Code
 	 ******************************************************************************/
@@ -628,6 +632,9 @@
 							FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
 
 							memset(&programable_buffer,0,sizeof(programable_buffer));
+							memset(&temp_buffer,0,sizeof(temp_buffer));
+							memset(&s_buffer,0,sizeof(s_buffer));
+							memset(&s_buffer_rbc,0,sizeof(s_buffer_rbc));
 							funcDelayUs(5);
 						}
 					}
@@ -754,7 +761,6 @@
 			}
 		}
 #endif
-
 		f_close(&g_fileObject1);
 		//f_closedir(&pendrive_dir);
 
@@ -775,24 +781,55 @@
 //		uint32_t Decimal_data = 0;
 		switch(no_of_digits)
 		{
-			case 1: Decimal_data  = ASCII2HEX(lineBuffer[starting_index]);//(lineBuffer[starting_index] - 48);
+			case 1: Decimal_data  = ASCII2HEX(lineBuffer[starting_index]);
 					break;
-			case 2: Decimal_data  = ASCII2HEX(lineBuffer[starting_index])*10;//(lineBuffer[starting_index] - 48)*10;
+			case 2:
+					data_temp =  ASCII2HEX(lineBuffer[starting_index]);
+					if(data_temp > 9)
+					{
+						Decimal_data = data_temp * 16;
+					}
+					else
+					{
+						Decimal_data = data_temp * 10;
+						Decimal_data = decimalToBCD(Decimal_data);
+					}
 					Decimal_data += ASCII2HEX(lineBuffer[starting_index+1]);
 					break;
-			case 3: Decimal_data  = ASCII2HEX(lineBuffer[starting_index])*100;//(lineBuffer[starting_index] - 48)*100;
-					Decimal_data += ASCII2HEX(lineBuffer[starting_index+1])*10;//(lineBuffer[starting_index+1] - 48)*10;
-					Decimal_data += ASCII2HEX(lineBuffer[starting_index+2]);
+			case 3:
 					break;
-			case 4: Decimal_data  = ASCII2HEX(lineBuffer[starting_index])*1000;//(lineBuffer[starting_index] - 48)*1000;
-					Decimal_data += ASCII2HEX(lineBuffer[starting_index+1])*100;//(lineBuffer[starting_index+1] - 48)*100;
-					Decimal_data += ASCII2HEX(lineBuffer[starting_index+2])*10;//(lineBuffer[starting_index+2] - 48)*10;
-					Decimal_data += ASCII2HEX(lineBuffer[starting_index+3]);//(lineBuffer[starting_index+3] - 48);
+			case 4:
+					data_temp =  ASCII2HEX(lineBuffer[starting_index]);
+					if(data_temp > 9)
+					{
+						DecimalMSB = data_temp * 16;
+					}
+					else
+					{
+						DecimalMSB = data_temp * 10;
 
+						DecimalMSB = decimalToBCD(DecimalMSB);
+					}
+					DecimalMSB += ASCII2HEX(lineBuffer[starting_index+1]);
+
+					data_temp =  ASCII2HEX(lineBuffer[starting_index+2]);
+					if(data_temp > 9)
+					{
+						DecimalLSB = data_temp * 16;
+					}
+					else
+					{
+						DecimalLSB = data_temp * 10;
+
+						DecimalLSB = decimalToBCD(DecimalLSB);
+					}
+					DecimalLSB += ASCII2HEX(lineBuffer[starting_index+3]);
+
+					Decimal_data = (DecimalMSB << 8) | DecimalLSB;
 					break;
 			default:break;
 		}
-		Decimal_data  = decimalToBCD(Decimal_data);
+//		Decimal_data  = decimalToBCD(Decimal_data);
 		return (Decimal_data);
 	}
 
@@ -1080,6 +1117,21 @@ void QTMR_IRQ_HANDLER(void)
 
 void SysTick_Handler(void)
 {
+//	if(bl_pwr_on == 1 && usb_attached != 1)
+//	{
+//		bl_tm_cntr++;
+//		if(bl_tm_cntr >= 3000)
+//		{
+//			bl_pwr_on = 0;
+//			bl_tm_cntr = 0;
+//			jump_to_hyperflash_location();
+//		}
+//	}
+//	else
+//	{
+//		bl_pwr_on = 0;
+//	}
+#if 0
 	KeypadPeriodicTimeCall();
 
 	/*********validation time:is SenderCAN is connected or not ************/
@@ -1532,6 +1584,7 @@ void SysTick_Handler(void)
 		TotIconToggle();
 	#endif
 	}
+#endif
 }
 
 /*!
@@ -1712,12 +1765,16 @@ void jump_to_hyperflash_location() {
 //    s_stackPointer = stackPointer;
 
 	///*
+
+/*
     static void (*farewellBootloader)(void) = 0;
-//    farewellBootloader = (void (*)(void))applicationAddress;
     farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
-    // Jump to the application.
+    //Jump to the application.
     farewellBootloader();
+    */
+
+
 //*/
 #if 0
 //! @brief Defines a constant for the default vector table.
@@ -1748,7 +1805,14 @@ enum _vector_table_address
     // Jump to the application.
     farewellBootloader();
 #endif
-   // __asm("ldr pc, =0x60080000");
+//    __asm("ldr pc, =0x60082305");
+    __asm("ldr r0, =0x60082305"); // Load the address into register r0
+    __asm("bx r0");               // Branch to the address stored in r0
+
+    while(1)
+	{
+
+	}
 }
 void Initialization(void)
 {
@@ -1759,15 +1823,45 @@ void Initialization(void)
     BOARD_InitDebugConsole();
     BOARD_InitLcd();
     BOARD_InitGPT();
+//	SysTick_Config(SystemCoreClock / 1000); //1ms systick
 
 
-    //gh  = hexa2bcd(0x17D0);
+    bl_pwr_on = 1;
 
 	USB_HostApplicationInit();
 
-//	HyperFlash();
+	if(bl_pwr_on == 0)
+	{
+		HyperFlash();//initialization and erasing
+		app_finalize();
+	}
+	else
+	{
+		jump_to_hyperflash_location();
+	}
 
-	app_finalize();
+	/*while(1)
+	{
+		USB_HostTaskFn(g_HostHandle);
+		USB_HostMsdTask(&g_MsdFatfsInstance);
+
+		if(bl_pwr_on == 0)
+		{
+			HyperFlash();//initialization and erasing
+
+			if(usb_attached == 1)
+			{
+				usb_attached = 0;
+				ReadFromPendrive();
+			}
+			else
+			{
+				jump_to_hyperflash_location();
+			}
+			//app_finalize();
+		}
+	}*/
+
 #if 0
 	//CanaFrameConfigure();
 	KeypadConfig();
@@ -4196,13 +4290,13 @@ uint8_t hexa2bcd_rtc(uint8_t temp_data)
     return bcd_result;
 }
 
-//uint8_t decimalToBCD(uint8_t decimal)
-//{
-//    uint8_t tens = decimal / 10;
-//    uint8_t ones = decimal % 10;
-//    uint8_t bcd = (tens << 4) | ones;
-//    return bcd;
-//}
+uint8_t decimalToBCD(uint8_t decimal)
+{
+    uint8_t tens = decimal / 10;
+    uint8_t ones = decimal % 10;
+    uint8_t bcd = (tens << 4) | ones;
+    return bcd;
+}
 
 //uint16_t decimalToBCD(uint16_t decimal) {
 //    uint16_t bcd = 0;
@@ -4217,18 +4311,18 @@ uint8_t hexa2bcd_rtc(uint8_t temp_data)
 //    return bcd;
 //}
 
-uint16_t decimalToBCD(uint16_t decimal) {
-    uint16_t bcd = 0;
-    uint16_t multiplier = 1;
-
-    while (decimal > 0) {
-        bcd += (decimal % 10) * multiplier;
-        decimal /= 10;
-        multiplier <<= 4;
-    }
-
-    return bcd;
-}
+//uint16_t decimalToBCD(uint16_t decimal) {
+//    uint16_t bcd = 0;
+//    uint16_t multiplier = 1;
+//
+//    while (decimal > 0) {
+//        bcd += (decimal % 10) * multiplier;
+//        decimal /= 10;
+//        multiplier <<= 4;
+//    }
+//
+//    return bcd;
+//}
 
 uint32_t  hexa2bcd(uint32_t temp_data)
 {

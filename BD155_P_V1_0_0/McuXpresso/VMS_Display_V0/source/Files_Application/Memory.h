@@ -59,4 +59,5 @@ extern void Decode_errorlog_array(void);
 extern void Decode_swwhlog_array(void);
 extern void Service_remainder_hrs_calculation(Uint32 diff_eng_hrs);
 
-#endif /* FILES_APPLICATION_MEMORY_H_ */
+#endif
+
