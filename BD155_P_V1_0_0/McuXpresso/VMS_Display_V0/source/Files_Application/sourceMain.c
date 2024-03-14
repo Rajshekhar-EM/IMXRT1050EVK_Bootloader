@@ -595,41 +595,82 @@
 
 						if(kg >= 512 || record_type == 0x01)
 						{
-							kg = 0;
-
-							PRINTF("\r\n Program a buffer to a page of NOR flash");
-							/* Prepare user buffer. */
-							for (i = 0; i < BUFFER_LEN; i++)
+							if(record_type == 0x01)
 							{
-								s_buffer[i] = programable_buffer[i];
-							}
 
-							/* Program user buffer into FLEXSPI NOR flash */
-							status =
-								ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
-							if (status != kStatus_Success)
-							{
-								PRINTF("\r\n Page program failure!\r\n");
-								error_trap();
-							}
+								PRINTF("\r\n Program a buffer to a page of NOR flash");
+								/* Prepare user buffer. */
+								for (i = 0; i < kg; i++)
+								{
+									s_buffer[i] = programable_buffer[i];
+								}
 
-							funcDelayUs(5);
-							DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
-							/* Verify programming by reading back from FLEXSPI memory directly */
-							memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
-							if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
-							{
-								PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
-									   (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
+								norConfig.pageSize = kg;
+								/* Program user buffer into FLEXSPI NOR flash */
+								status =
+									ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+								if (status != kStatus_Success)
+								{
+									PRINTF("\r\n Page program failure!\r\n");
+									error_trap();
+								}
+
+								funcDelayUs(5);
+								DCACHE_InvalidateByRange(FlexSPINorAddress, kg);
+								/* Verify programming by reading back from FLEXSPI memory directly */
+								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), kg);
+								if (memcmp(s_buffer_rbc, s_buffer, kg) == 0)
+								{
+									PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+										   (FlexSPINorAddress), (FlexSPINorAddress + kg));
+								}
+								else
+								{
+									PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+									error_trap();
+								}
+
+//								NorAddress        = 512 + NorAddress;
+//								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
 							}
 							else
 							{
-								PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
-								error_trap();
-							}
+								kg = 0;
 
-							NorAddress        = 512 + NorAddress;
-							FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+								PRINTF("\r\n Program a buffer to a page of NOR flash");
+								/* Prepare user buffer. */
+								for (i = 0; i < BUFFER_LEN; i++)
+								{
+									s_buffer[i] = programable_buffer[i];
+								}
+
+								/* Program user buffer into FLEXSPI NOR flash */
+								status =
+									ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+								if (status != kStatus_Success)
+								{
+									PRINTF("\r\n Page program failure!\r\n");
+									error_trap();
+								}
+
+								funcDelayUs(5);
+								DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
+								/* Verify programming by reading back from FLEXSPI memory directly */
+								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
+								if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
+								{
+									PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+										   (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
+								}
+								else
+								{
+									PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+									error_trap();
+								}
+
+								NorAddress        = 512 + NorAddress;
+								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+							}
 
 							memset(&programable_buffer,0,sizeof(programable_buffer));
 							memset(&temp_buffer,0,sizeof(temp_buffer));
@@ -1746,36 +1787,92 @@ int main(void)
     return 0;
 #endif
 }
+
+//#if !BL_FEATURE_TIMEOUT
+//! @brief Returns the user application address and stack pointer.
+//!
+//! For flash-resident and rom-resident target, gets the user application address
+//! and stack pointer from the APP_VECTOR_TABLE.
+//! Ram-resident version does not support jumping to application address.
+static void get_user_application_entry(uint32_t *appEntry, uint32_t *appStack)
+{
+    assert(appEntry);
+    assert(appStack);
+
+#ifdef BL_TARGET_RAM
+    *appEntry = 0;
+    *appStack = 0;
+#else
+#if FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL
+    // Check if address of SP and PC is in an execute-only region.
+    if (!is_in_execute_only_region(kDefaultVectorTableAddress, 8))
+    {
+        *appEntry = APP_VECTOR_TABLE[kInitialPC];
+        *appStack = APP_VECTOR_TABLE[kInitialSP];
+    }
+    else
+    {
+        // Set to invalid value when vector table is in execute-only region,
+        // as ROM doesn't support jumping to an application in such region so far.
+        // The main purpose of below operation is to prevent ROM from inifinit loop
+        // between NVIC_SystemReset() and fetching SP and PC frome execute-only region.
+        *appEntry = 0;
+        *appStack = 0;
+    }
+#else
+#if BL_FEATURE_RELIABLE_UPDATE
+    if (g_bootloaderContext.imageStart != 0xffffffffu)
+    {
+        uint32_t *appVectorTable = (uint32_t *)g_bootloaderContext.imageStart;
+        *appEntry = appVectorTable[kInitialPC];
+        *appStack = appVectorTable[kInitialSP];
+    }
+    else
+    {
+        *appEntry = 0xffffffffu;
+        *appStack = 0xffffffffu;
+    }
+#else
+    //*appEntry = APP_VECTOR_TABLE[kInitialPC];
+    //*appStack = APP_VECTOR_TABLE[kInitialSP];
+#endif // BL_FEATURE_RELIABLE_UPDATE
+#endif //  FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL
+#endif // BL_TARGET_RAM
+}
+//#endif // BL_FEATURE_TIMEOUT
+
 // Function to perform the jump
 void jump_to_hyperflash_location() {
-//    // Define a function pointer with the same signature as the code you are jumping to
-//    typedef void (*function_ptr_t)(void);
-//
-//    // Cast the jump address to the function pointer type
-//    function_ptr_t jump_function = (function_ptr_t)JUMP_ADDRESS;
-//
-//    // Call the function at the jump address
-//    jump_function();
 
+	 uint32_t applicationAddress, stackPointer;
+	 get_user_application_entry(&applicationAddress, &stackPointer);
     // Create the function call to the user application.
     // Static variables are needed since changed the stack pointer out from under the compiler
     // we need to ensure the values we are using are not stored on the previous stack
-//	uint32_t stackPointer;
-//    static uint32_t s_stackPointer = 0;
-//    s_stackPointer = stackPointer;
+    static uint32_t s_stackPointer = 0;
+    s_stackPointer = stackPointer;
+    static void (*farewellBootloader)(void) = 0;
+//    farewellBootloader = (void (*)(void))applicationAddress;
+    farewellBootloader = 0x60082305;
 
-	///*
+    // Set the VTOR to the application vector table address.
+//    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
+    SCB->VTOR = 0;
 
-/*
+    // Set stack pointers to the application stack pointer.
+    __set_MSP(s_stackPointer);
+    __set_PSP(s_stackPointer);
+
+    // Jump to the application.
+    farewellBootloader();
+
+	/*
     static void (*farewellBootloader)(void) = 0;
     farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
     //Jump to the application.
     farewellBootloader();
     */
-
-
-//*/
 #if 0
 //! @brief Defines a constant for the default vector table.
 enum _vector_table_address
@@ -1805,7 +1902,8 @@ enum _vector_table_address
     // Jump to the application.
     farewellBootloader();
 #endif
-//    __asm("ldr pc, =0x60082305");
+/*
+    //__asm("ldr pc, =0x60082305");
     __asm("ldr r0, =0x60082305"); // Load the address into register r0
     __asm("bx r0");               // Branch to the address stored in r0
 
@@ -1813,6 +1911,7 @@ enum _vector_table_address
 	{
 
 	}
+*/
 }
 void Initialization(void)
 {
@@ -1830,6 +1929,10 @@ void Initialization(void)
 
 	USB_HostApplicationInit();
 
+	HyperFlash();//initialization and erasing
+	app_finalize();
+
+	/*
 	if(bl_pwr_on == 0)
 	{
 		HyperFlash();//initialization and erasing
@@ -1839,6 +1942,7 @@ void Initialization(void)
 	{
 		jump_to_hyperflash_location();
 	}
+	*/
 
 	/*while(1)
 	{
