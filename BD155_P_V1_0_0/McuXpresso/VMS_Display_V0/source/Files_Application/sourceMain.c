@@ -524,10 +524,9 @@
 	    pendrive_filename = pendrive_filename_creation("DataLogging");
 	    error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
 	    */
-//	    error = f_open(&g_fileObject1,_T("1:Display_app.hex"), FA_READ | FA_OPEN_EXISTING);
-	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:led_without_header.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:main_task.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	    if(error == FR_OK)
 	    {
@@ -815,7 +814,7 @@
 	// Define the address to jump to in HyperFlash memory
 	//#define JUMP_ADDRESS 0x6000DFB4 // Example address, replace with your desired address
 
-	#define JUMP_ADDRESS  0x60082304//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
+	#define JUMP_ADDRESS  0x60080305//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
 
 	uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits)
 	{
@@ -1172,7 +1171,7 @@ void SysTick_Handler(void)
 //	{
 //		bl_pwr_on = 0;
 //	}
-#if 0
+#if 1
 	KeypadPeriodicTimeCall();
 
 	/*********validation time:is SenderCAN is connected or not ************/
@@ -1840,10 +1839,55 @@ static void get_user_application_entry(uint32_t *appEntry, uint32_t *appStack)
 #endif // BL_TARGET_RAM
 }
 //#endif // BL_FEATURE_TIMEOUT
-
+static OSA_SR_ALLOC();
 // Function to perform the jump
 void jump_to_hyperflash_location() {
 
+	// Turn off global interrupt
+	OSA_ENTER_CRITICAL();
+
+	// Shutdown microseconds driver.
+//	    PIT->CHANNEL[1].TCTRL = 0; // stop timer 1
+//	    PIT->CHANNEL[0].TCTRL = 0; // stop timer 1
+//	    PIT->CHANNEL[1].LDVAL = 0;
+//	    PIT->CHANNEL[0].LDVAL = 0;
+//	    PIT->MCR |= PIT_MCR_MDIS_MASK;
+
+    // Clear any IRQs that may be enabled, we only want the IRQs we enable to be active
+    //NVIC_ClearEnabledIRQs();
+    NVIC->ICER[0] = 0xFFFFFFFF;
+    NVIC->ICER[1] = 0xFFFFFFFF;
+    NVIC->ICER[2] = 0xFFFFFFFF;
+    NVIC->ICER[3] = 0xFFFFFFFF;
+    NVIC->ICER[4] = 0xFFFFFFFF;
+    NVIC->ICER[5] = 0xFFFFFFFF;
+    NVIC->ICER[6] = 0xFFFFFFFF;
+    NVIC->ICER[7] = 0xFFFFFFFF;
+
+    // Clear any pending IRQs that may have been set
+    //NVIC_ClearAllPendingIRQs();
+    NVIC->ICPR[0] = 0xFFFFFFFF;
+    NVIC->ICPR[1] = 0xFFFFFFFF;
+    NVIC->ICPR[2] = 0xFFFFFFFF;
+    NVIC->ICPR[3] = 0xFFFFFFFF;
+    NVIC->ICPR[4] = 0xFFFFFFFF;
+    NVIC->ICPR[5] = 0xFFFFFFFF;
+    NVIC->ICPR[6] = 0xFFFFFFFF;
+    NVIC->ICPR[7] = 0xFFFFFFFF;
+
+    // Set the VTOR to default.
+	SCB->VTOR = 0;//kDefaultVectorTableAddress;
+
+	 CLOCK_DisableClock(kCLOCK_UsbOh3);
+
+	 // Restore global interrupt.
+	 __enable_irq();
+
+	// Memory barriers for good measure.
+	__ISB();
+	__DSB();
+
+#if 0
 	 uint32_t applicationAddress, stackPointer;
 	 get_user_application_entry(&applicationAddress, &stackPointer);
     // Create the function call to the user application.
@@ -1853,7 +1897,7 @@ void jump_to_hyperflash_location() {
     s_stackPointer = stackPointer;
     static void (*farewellBootloader)(void) = 0;
 //    farewellBootloader = (void (*)(void))applicationAddress;
-    farewellBootloader = 0x60082305;
+    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
     // Set the VTOR to the application vector table address.
 //    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
@@ -1865,14 +1909,16 @@ void jump_to_hyperflash_location() {
 
     // Jump to the application.
     farewellBootloader();
+#endif
 
-	/*
+#if 0
     static void (*farewellBootloader)(void) = 0;
     farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
     //Jump to the application.
     farewellBootloader();
-    */
+#endif
+
 #if 0
 //! @brief Defines a constant for the default vector table.
 enum _vector_table_address
@@ -1902,16 +1948,17 @@ enum _vector_table_address
     // Jump to the application.
     farewellBootloader();
 #endif
-/*
+
+#if 1
     //__asm("ldr pc, =0x60082305");
-    __asm("ldr r0, =0x60082305"); // Load the address into register r0
+    __asm("ldr r0, =0x60080305"); // Load the address into register r0
     __asm("bx r0");               // Branch to the address stored in r0
 
     while(1)
 	{
 
 	}
-*/
+#endif
 }
 void Initialization(void)
 {
@@ -1922,57 +1969,21 @@ void Initialization(void)
     BOARD_InitDebugConsole();
     BOARD_InitLcd();
     BOARD_InitGPT();
-//	SysTick_Config(SystemCoreClock / 1000); //1ms systick
+//	SysTick_Config(SystemCoreClock / 100); //1ms systick
 
-
-    bl_pwr_on = 1;
+	bl_pwr_on = 1;
+	HyperFlash();//initialization and erasing
 
 	USB_HostApplicationInit();
 
-	HyperFlash();//initialization and erasing
 	app_finalize();
-
-	/*
-	if(bl_pwr_on == 0)
-	{
-		HyperFlash();//initialization and erasing
-		app_finalize();
-	}
-	else
-	{
-		jump_to_hyperflash_location();
-	}
-	*/
-
-	/*while(1)
-	{
-		USB_HostTaskFn(g_HostHandle);
-		USB_HostMsdTask(&g_MsdFatfsInstance);
-
-		if(bl_pwr_on == 0)
-		{
-			HyperFlash();//initialization and erasing
-
-			if(usb_attached == 1)
-			{
-				usb_attached = 0;
-				ReadFromPendrive();
-			}
-			else
-			{
-				jump_to_hyperflash_location();
-			}
-			//app_finalize();
-		}
-	}*/
-
 #if 0
-	//CanaFrameConfigure();
+	/*CanaFrameConfigure();*/
 	KeypadConfig();
 	VariablesInit();
 	J1939Config();
 	J1939MailboxConfigure();
-    //SDCardfuncBegin = DetectSDCard();
+    /*SDCardfuncBegin = DetectSDCard();*/
 	InitAdc();
 	RTCInit();
 	PWM_config();
@@ -1980,7 +1991,7 @@ void Initialization(void)
 	Max22190Init();
 	Poweron_memory_read_write();
 	Poweronreaddatafromfram();
-	SysTick_Config(SystemCoreClock / 100); //10ms systick
+	//SysTick_Config(SystemCoreClock / 100); //10ms systick
 	set_brightness(giIntensityPercent);
 
     /*******This is related to Display Enable pin of MAX16929AGUI/V+(U22),
@@ -2007,6 +2018,46 @@ void Initialization(void)
 	erase_fram_memory(0x0000,0x7FFF);
 */
 #endif
+
+//	HyperFlash();//initialization and erasing
+//	app_finalize();
+
+
+//	if(bl_pwr_on == 0)
+//	{
+//		HyperFlash();//initialization and erasing
+//		app_finalize();
+//	}
+//	else
+//	{
+//		//SysTick_Config(SystemCoreClock / 100); //1ms systick
+//		jump_to_hyperflash_location();
+//	}
+
+
+	/*while(1)
+	{
+		USB_HostTaskFn(g_HostHandle);
+		USB_HostMsdTask(&g_MsdFatfsInstance);
+
+		if(bl_pwr_on == 0)
+		{
+			HyperFlash();//initialization and erasing
+
+			if(usb_attached == 1)
+			{
+				usb_attached = 0;
+				ReadFromPendrive();
+			}
+			else
+			{
+				jump_to_hyperflash_location();
+			}
+			//app_finalize();
+		}
+	}*/
+
+
 }
 
 

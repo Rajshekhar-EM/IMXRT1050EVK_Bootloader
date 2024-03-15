@@ -2,7 +2,6 @@
 <launchConfiguration type="com.nxp.mcuxpresso.core.debug.support.segger.launchConfigurationType">
     <stringAttribute key="com.crt.ctrlcenter.OFSemuDetails" value="JLink601014625"/>
     <booleanAttribute key="com.crt.ctrlcenter.mainBreakIsHardware" value="true"/>
-    <booleanAttribute key="com.crt.ctrlcenter.saveState" value="true"/>
     <stringAttribute key="com.crt.ctrlcenter.serialNumber" value="USB 601014625"/>
     <mapAttribute key="com.crt.ctrlcenter.symbolsGroupSettings"/>
     <intAttribute key="com.nxp.mcuxpresso.core.debug.support.segger.launches.JLinkLaunchConfigHandler.version" value="2"/>
@@ -12,7 +11,7 @@
     <stringAttribute key="com.nxp.mcuxpresso.ide.probe.name" value="J-Link PLUS"/>
     <stringAttribute key="com.nxp.mcuxpresso.ide.probe.nickname" value=""/>
     <stringAttribute key="com.nxp.mcuxpresso.ide.probe.type" value="USB"/>
-    <stringAttribute key="com.nxp.mcuxpresso.jlink.flash.base.address" value="0x60000000"/>
+    <stringAttribute key="com.nxp.mcuxpresso.jlink.flash.base.address" value="0x60080000"/>
     <stringAttribute key="com.nxp.mcuxpresso.jlink.flash.executable" value="hex"/>
     <booleanAttribute key="com.nxp.mcuxpresso.jlink.flash.halt.target" value="true"/>
     <booleanAttribute key="com.nxp.mcuxpresso.jlink.flash.reset.target" value="true"/>
@@ -75,7 +74,7 @@
     <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Debug\evkbimxrt1050_iled_blinky.axf"/>
     <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="evkbimxrt1050_iled_blinky"/>
     <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="false"/>
-    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="com.crt.advproject.config.exe.debug.2111589291"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="com.crt.advproject.config.exe.debug.48751578"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
         <listEntry value="/evkbimxrt1050_iled_blinky"/>
     </listAttribute>

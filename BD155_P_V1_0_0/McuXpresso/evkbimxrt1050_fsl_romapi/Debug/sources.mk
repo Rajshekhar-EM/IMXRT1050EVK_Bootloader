@@ -16,12 +16,19 @@ OBJS :=
 SUBDIRS := \
 board \
 component/lists \
+component/osa \
 component/silicon_id \
 component/uart \
 device \
 drivers \
+fatfs/source \
+fatfs/source/fsl_ram_disk \
+fatfs/source/fsl_usb_disk \
 source \
 startup \
+usb/host/class \
+usb/host \
+usb/phy \
 utilities \
 xip \
 

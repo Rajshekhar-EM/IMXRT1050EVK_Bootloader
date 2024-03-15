@@ -1,0 +1,7 @@
+../source/host_msd_fatfs.c:123:6:USB_HostMsdControlCallback	32	static
+../source/host_msd_fatfs.c:136:13:USB_HostMsdFatfsTestDone	8	static
+../source/host_msd_fatfs.c:267:13:USB_HostMsdFatfsDisplayFileInfo	88	static
+../source/host_msd_fatfs.c:284:16:USB_HostMsdFatfsListDirectory	88	static
+../source/host_msd_fatfs.c:336:13:USB_HostMsdFatfsTest	640	static
+../source/host_msd_fatfs.c:825:6:USB_HostMsdTask	32	static
+../source/host_msd_fatfs.c:897:14:USB_HostMsdEvent	48	static
