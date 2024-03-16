@@ -98,6 +98,7 @@
 									<listOptionValue builtIn="false" value="XIP_EXTERNAL_FLASH=1"/>
 									<listOptionValue builtIn="false" value="XIP_BOOT_HEADER_ENABLE=1"/>
 									<listOptionValue builtIn="false" value="USB_STACK_BM"/>
+									<listOptionValue builtIn="false" value="PRINTF_ADVANCED_ENABLE=1"/>
 									<listOptionValue builtIn="false" value="MCUXPRESSO_SDK"/>
 									<listOptionValue builtIn="false" value="CR_INTEGER_PRINTF"/>
 									<listOptionValue builtIn="false" value="PRINTF_FLOAT_ENABLE=0"/>

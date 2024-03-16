@@ -927,8 +927,8 @@ int main(void)
 	    error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
 	    */
 //	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
-	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
+	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	    if(error == FR_OK)
 	    {

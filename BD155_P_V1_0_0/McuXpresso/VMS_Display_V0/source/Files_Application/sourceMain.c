@@ -8,6 +8,11 @@
 #include "sourceMain.h"
 
 /*********************************HyperFlash***********************************/
+		uint32_t extended_address = 0;
+		uint32_t jump_address = 0;
+
+		uint8_t extnd_addr_arr[10];
+		uint8_t jump_addr_arr[10];
 
 	    uint32_t hyperflash_addr = 0;
 	    uint16_t hyper_sec_no = 0, gh = 0, ij = 0, kg = 0;
@@ -20,6 +25,9 @@
 
 	    bool bl_pwr_on = 0;
 	    uint16_t bl_tm_cntr = 0;
+
+	    void jump_to_hyperflash_location(uint32_t applicationAddress);
+	    void ReadFromPendrive(void);
 	/*******************************************************************************
 	 * Code
 	 ******************************************************************************/
@@ -493,11 +501,11 @@
 	{
 	    status_t status;
 	    uint32_t i = 0U;
-//	    uint32_t serialNorAddress;        /* Address of the serial nor device location */
-//	    uint64_t FlexSPISerialNorAddress; /* Address of the serial nor device in FLEXSPI memory */
 	    uint32_t serialNorTotalSize;
 	    uint32_t serialNorSectorSize;
 	    uint32_t serialNorPageSize;
+
+		uint8_t ix = 0,fg = 0;
 
 	    flexspi_cache_status_t cacheStatus;
 
@@ -525,39 +533,11 @@
 	    error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
 	    */
 //	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
-	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
+	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	    if(error == FR_OK)
 	    {
-#if 0
-		    /* Erase one sector. */
-		    serialNorTotalSize  = norConfig.memConfig.sflashA1Size;
-		    serialNorSectorSize = norConfig.sectorSize;
-		    serialNorPageSize   = norConfig.pageSize;
-
-		    PRINTF("\r\n Erasing serial NOR flash over FLEXSPI");
-
-		    for(hyper_sec_no = 1, hyperflash_addr = 0x80000; hyper_sec_no < 255, hyperflash_addr < 0x4000000; hyper_sec_no++, hyperflash_addr+= 0x40000)
-		    {
-		    	 /* Erase a sector from target device dest address */
-				serialNorAddress        = hyperflash_addr;
-				FlexSPISerialNorAddress = 0x60000000 + serialNorAddress;//EXAMPLE_FLEXSPI_AMBA_BASE + serialNorAddress;
-
-			    flexspi_nor_handle_cache(true, cacheStatus);
-			    status = ROM_FLEXSPI_NorFlash_Erase(FlexSpiInstance, &norConfig, serialNorAddress, serialNorSectorSize);
-			    flexspi_nor_handle_cache(false, cacheStatus);
-			    if (status == kStatus_Success)
-			    {
-			    	PRINTF("\r\n sec no %d\r\n",hyper_sec_no);
-			    }
-			    else
-			    {
-			        PRINTF("\r\n Erase sector failure!\r\n");
-			        error_trap();
-			    }
-		    }
-#endif
 		    kg = 0;
 	    	NorAddress = 0x80000;
 			FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
@@ -589,7 +569,7 @@
 						{
 							temp_buffer[ij] = AsciiToDecimal(gh,2);
 							programable_buffer[kg] = temp_buffer[ij];
-							funcDelayUs(5);
+							funcDelayUs(1);
 						}
 
 						if(kg >= 512 || record_type == 0x01)
@@ -614,7 +594,7 @@
 									error_trap();
 								}
 
-								funcDelayUs(5);
+								funcDelayUs(1);
 								DCACHE_InvalidateByRange(FlexSPINorAddress, kg);
 								/* Verify programming by reading back from FLEXSPI memory directly */
 								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), kg);
@@ -652,7 +632,7 @@
 									error_trap();
 								}
 
-								funcDelayUs(5);
+								funcDelayUs(1);
 								DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
 								/* Verify programming by reading back from FLEXSPI memory directly */
 								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
@@ -675,132 +655,50 @@
 							memset(&temp_buffer,0,sizeof(temp_buffer));
 							memset(&s_buffer,0,sizeof(s_buffer));
 							memset(&s_buffer_rbc,0,sizeof(s_buffer_rbc));
-							funcDelayUs(5);
+							funcDelayUs(1);
 						}
-					}
-
 					}
 					else if(record_type == 0x04)
 					{
 						/*Extended linear address record*/
+						ix = 9;
+						for(fg = 0; fg < no_bytes;ix+=2/*1byte*/,fg++)
+						{
+							extnd_addr_arr[fg] = AsciiToDecimal(ix,2);
+						}
+						/*
+						extended_address = extnd_addr_arr[0];
+						extended_address = (extended_address << 8) | extnd_addr_arr[1];
+						*/
+						extended_address = extnd_addr_arr[0];
+						extended_address = extended_address << 8;
+						extended_address = extended_address | extnd_addr_arr[1];
+						memset(&extnd_addr_arr,0,sizeof(extnd_addr_arr));
 					}
 					else if(record_type == 0x05)
 					{
 						/*Jump address mentioned in the address field*/
+						ix = 9;
+						for(fg = 0; fg < no_bytes;ix+=2/*1byte*/,fg++)
+						{
+							jump_addr_arr[fg] = AsciiToDecimal(ix,2);
+						}
+
+						jump_address = jump_addr_arr[0];
+        				jump_address = jump_address << 8;
+						jump_address = jump_address | jump_addr_arr[1];
+						jump_address = jump_address << 8;
+						jump_address = jump_address | jump_addr_arr[2];
+						jump_address = jump_address << 8;
+						jump_address = jump_address | jump_addr_arr[3];
+						memset(&jump_addr_arr,0,sizeof(jump_addr_arr));
 					}
 
-				f_sync(&g_fileObject1);
-				memset(&lineBuffer,0,sizeof(lineBuffer));
+					f_sync(&g_fileObject1);
+					memset(&lineBuffer,0,sizeof(lineBuffer));
+				}
 			}
 	    }
-
-#if 0
-	    	gh = 0;
-	    	NorAddress = 0x80000;
-			FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
-			//f_lseek(&g_fileObject1, 0);
-			//f_read(&g_fileObject1,g_bufferRead,sizeof(g_bufferRead),&bytesRead);
-			for(;;)
-			{
-				//DelayUs1(30000)
-				//memset(&f_bufferRead,0,sizeof(f_bufferRead));
-				error = f_read(&g_fileObject1,f_bufferRead,sizeof(f_bufferRead),&bytesRead);
-
-				for(ij = 0; ij < 32;ij++, gh++)
-				{
-					if(f_bufferRead[ij] > 47 && f_bufferRead[ij] < 58)
-					{
-						// 0-9
-						programable_buffer[gh] = f_bufferRead[ij] - 48;
-					}
-					else if(f_bufferRead[ij] > 64 && f_bufferRead[ij] < 71)
-					{
-					   // A-F
-						programable_buffer[gh] = f_bufferRead[ij] - 55;
-					}
-
-					//programable_buffer[gh] = f_bufferRead[ij];
-				}
-
-				if(gh >= 512)
-				{
-					gh = 0;
-
-				    PRINTF("\r\n Program a buffer to a page of NOR flash");
-				    /* Prepare user buffer. */
-				    for (i = 0; i < BUFFER_LEN; i++)
-				    {
-				        s_buffer[i] = programable_buffer[i];
-				    }
-
-
-				    /* Program user buffer into FLEXSPI NOR flash */
-//				    status =
-//				        ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
-				    status =
-				        ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
-				    if (status != kStatus_Success)
-				    {
-				        PRINTF("\r\n Page program failure!\r\n");
-				        error_trap();
-				    }
-
-				    DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
-				    /* Verify programming by reading back from FLEXSPI memory directly */
-				    memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
-				    if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
-				    {
-				        PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
-				               (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
-				    }
-				    else
-				    {
-				        PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
-				        error_trap();
-				    }
-
-					NorAddress        = 512 + NorAddress;
-					FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
-				}
-
-//				if (error || bytesRead == 0)
-//				{
-//					gh = 0;
-//				    break; /* error or eof */
-//				}
-
-				//f_sync(&g_fileObject1);
-
-/*
-
-				if(f_bufferRead[0] == ':')
-				{
-					if(f_bufferRead[1] == 0x31)
-					{
-						if(f_bufferRead[2] == 0x30)
-						{
-							for(ij = 9; ij < (16*2+9);ij++, gh++)
-							{
-								programable_buffer[gh] = f_bufferRead[ij];
-							}
-						}
-					}
-					else if(f_bufferRead[1] == 0x30)
-					{
-						if(f_bufferRead[2] == 0x34)
-						{
-							for(ij = 9; ij < (4*2+9);ij++, gh++)
-							{
-								programable_buffer[gh] = f_bufferRead[ij];
-							}
-						}
-					}
-				}
-
-*/
-			}
-		}
-#endif
 		f_close(&g_fileObject1);
 		//f_closedir(&pendrive_dir);
 
@@ -808,13 +706,221 @@
 		f_mount(0, "1:", 0);
 
 		// Perform the jump to the desired location in HyperFlash memory
-		jump_to_hyperflash_location();
+		jump_to_hyperflash_location(jump_address);
 	}
+	//#endif // BL_FEATURE_TIMEOUT
+	static OSA_SR_ALLOC();
+
 
 	// Define the address to jump to in HyperFlash memory
 	//#define JUMP_ADDRESS 0x6000DFB4 // Example address, replace with your desired address
 
-	#define JUMP_ADDRESS  0x60080305//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
+	#define JUMP_ADDRESS  0x60082305//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
+	// Function to perform the jump
+	void jump_to_hyperflash_location(uint32_t applicationAddress) {
+
+
+	    // Disable UART module
+//	    UART_DisableTx(base);
+//	    UART_DisableRx(base);
+//	    UART_DisableInterrupts(base, kUART_RxDataRegFullInterruptEnable);
+
+		LPUART_Deinit(LPUART1);
+		LPUART_DisableInterrupts(LPUART1,kLPUART_TxDataRegEmptyInterruptEnable | kLPUART_RxDataRegFullInterruptEnable);
+
+	    // Disable USB clock gate
+//	    CLOCK_DisableClock(kCLOCK_Usb1);
+
+	    CLOCK_DisableClock(kCLOCK_Usdhc1);
+
+	    CLOCK_DisableClock(kCLOCK_Usdhc2);
+//	    // Disable USB interrupt
+//	    NVIC_DisableIRQ(USB1_IRQn);
+	    uint8_t irqNumber;
+	    uint8_t usbHOSTEhciIrq[] = USBHS_IRQS;
+	    irqNumber                = usbHOSTEhciIrq[CONTROLLER_ID - kUSB_ControllerEhci0];
+
+	    DisableIRQ((IRQn_Type)irqNumber);
+//
+//	    // Power down USB PHY if needed
+//	    USB_PHY_PowerDown();
+//
+//	    // Disable USB controller
+//	    USB_Deinit(CONTROLLER_ID);
+//	    USB_HostDeinit(g_HostHandle);
+
+
+		// Turn off global interrupt
+		OSA_ENTER_CRITICAL();
+
+		// Shutdown microseconds driver.
+	//	    PIT->CHANNEL[1].TCTRL = 0; // stop timer 1
+	//	    PIT->CHANNEL[0].TCTRL = 0; // stop timer 1
+	//	    PIT->CHANNEL[1].LDVAL = 0;
+	//	    PIT->CHANNEL[0].LDVAL = 0;
+	//	    PIT->MCR |= PIT_MCR_MDIS_MASK;
+
+	    // Clear any IRQs that may be enabled, we only want the IRQs we enable to be active
+	    //NVIC_ClearEnabledIRQs();
+	    NVIC->ICER[0] = 0xFFFFFFFF;
+	    NVIC->ICER[1] = 0xFFFFFFFF;
+	    NVIC->ICER[2] = 0xFFFFFFFF;
+	    NVIC->ICER[3] = 0xFFFFFFFF;
+	    NVIC->ICER[4] = 0xFFFFFFFF;
+	    NVIC->ICER[5] = 0xFFFFFFFF;
+	    NVIC->ICER[6] = 0xFFFFFFFF;
+	    NVIC->ICER[7] = 0xFFFFFFFF;
+
+	    // Clear any pending IRQs that may have been set
+	    //NVIC_ClearAllPendingIRQs();
+	    NVIC->ICPR[0] = 0xFFFFFFFF;
+	    NVIC->ICPR[1] = 0xFFFFFFFF;
+	    NVIC->ICPR[2] = 0xFFFFFFFF;
+	    NVIC->ICPR[3] = 0xFFFFFFFF;
+	    NVIC->ICPR[4] = 0xFFFFFFFF;
+	    NVIC->ICPR[5] = 0xFFFFFFFF;
+	    NVIC->ICPR[6] = 0xFFFFFFFF;
+	    NVIC->ICPR[7] = 0xFFFFFFFF;
+
+	    // Set the VTOR to default.
+		SCB->VTOR = 0;//kDefaultVectorTableAddress;
+
+		 CLOCK_DisableClock(kCLOCK_UsbOh3);
+
+		 // Restore global interrupt.
+		 __enable_irq();
+
+		// Memory barriers for good measure.
+		__ISB();
+		__DSB();
+
+	#if 0
+		 uint32_t applicationAddress, stackPointer;
+		 get_user_application_entry(&applicationAddress, &stackPointer);
+	    // Create the function call to the user application.
+	    // Static variables are needed since changed the stack pointer out from under the compiler
+	    // we need to ensure the values we are using are not stored on the previous stack
+	    static uint32_t s_stackPointer = 0;
+	    s_stackPointer = stackPointer;
+	    static void (*farewellBootloader)(void) = 0;
+	//    farewellBootloader = (void (*)(void))applicationAddress;
+	    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
+
+	    // Set the VTOR to the application vector table address.
+	//    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
+	    SCB->VTOR = 0;
+
+	    // Set stack pointers to the application stack pointer.
+	    __set_MSP(s_stackPointer);
+	    __set_PSP(s_stackPointer);
+
+	    // Jump to the application.
+	    farewellBootloader();
+	#endif
+
+	#if 1
+	    static void (*farewellBootloader)(void) = 0;
+//	    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
+	    farewellBootloader = (void (*)(void))applicationAddress;
+
+	    //Jump to the application.
+	    farewellBootloader();
+	#endif
+
+	#if 0
+	//! @brief Defines a constant for the default vector table.
+	enum _vector_table_address
+	{
+		//! @brief Address of the default vector table, which is always 0.
+		kDefaultVectorTableAddress = 0
+	};
+	#define APP_VECTOR_TABLE ((uint32_t *)kDefaultVectorTableAddress)
+
+	//    shutdown_cleanup(kShutdownType_Shutdown);
+
+	    // Create the function call to the user application.
+	    // Static variables are needed since changed the stack pointer out from under the compiler
+	    // we need to ensure the values we are using are not stored on the previous stack
+	    static uint32_t s_stackPointer = 0;
+	    s_stackPointer = 0;
+	    static void (*farewellBootloader)(void) = 0;
+	//    farewellBootloader = (void (*)(void))applicationAddress;
+	    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
+	    // Set the VTOR to the application vector table address.
+	    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
+
+	    // Set stack pointers to the application stack pointer.
+	    __set_MSP(s_stackPointer);
+	    __set_PSP(s_stackPointer);
+
+	    // Jump to the application.
+	    farewellBootloader();
+	#endif
+
+	#if 0
+	    //__asm("ldr pc, =0x60082305");
+	    __asm("ldr r0, =0x60080305"); // Load the address into register r0
+	    __asm("bx r0");               // Branch to the address stored in r0
+
+	    while(1)
+		{
+
+		}
+	#endif
+	}
+
+
+	//#if !BL_FEATURE_TIMEOUT
+	//! @brief Returns the user application address and stack pointer.
+	//!
+	//! For flash-resident and rom-resident target, gets the user application address
+	//! and stack pointer from the APP_VECTOR_TABLE.
+	//! Ram-resident version does not support jumping to application address.
+	static void get_user_application_entry(uint32_t *appEntry, uint32_t *appStack)
+	{
+	    assert(appEntry);
+	    assert(appStack);
+
+	#ifdef BL_TARGET_RAM
+	    *appEntry = 0;
+	    *appStack = 0;
+	#else
+	#if FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL
+	    // Check if address of SP and PC is in an execute-only region.
+	    if (!is_in_execute_only_region(kDefaultVectorTableAddress, 8))
+	    {
+	        *appEntry = APP_VECTOR_TABLE[kInitialPC];
+	        *appStack = APP_VECTOR_TABLE[kInitialSP];
+	    }
+	    else
+	    {
+	        // Set to invalid value when vector table is in execute-only region,
+	        // as ROM doesn't support jumping to an application in such region so far.
+	        // The main purpose of below operation is to prevent ROM from inifinit loop
+	        // between NVIC_SystemReset() and fetching SP and PC frome execute-only region.
+	        *appEntry = 0;
+	        *appStack = 0;
+	    }
+	#else
+	#if BL_FEATURE_RELIABLE_UPDATE
+	    if (g_bootloaderContext.imageStart != 0xffffffffu)
+	    {
+	        uint32_t *appVectorTable = (uint32_t *)g_bootloaderContext.imageStart;
+	        *appEntry = appVectorTable[kInitialPC];
+	        *appStack = appVectorTable[kInitialSP];
+	    }
+	    else
+	    {
+	        *appEntry = 0xffffffffu;
+	        *appStack = 0xffffffffu;
+	    }
+	#else
+	    //*appEntry = APP_VECTOR_TABLE[kInitialPC];
+	    //*appStack = APP_VECTOR_TABLE[kInitialSP];
+	#endif // BL_FEATURE_RELIABLE_UPDATE
+	#endif //  FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL
+	#endif // BL_TARGET_RAM
+	}
 
 	uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits)
 	{
@@ -1784,180 +1890,6 @@ int main(void)
 		usb_echo("running\r\n");
     }
     return 0;
-#endif
-}
-
-//#if !BL_FEATURE_TIMEOUT
-//! @brief Returns the user application address and stack pointer.
-//!
-//! For flash-resident and rom-resident target, gets the user application address
-//! and stack pointer from the APP_VECTOR_TABLE.
-//! Ram-resident version does not support jumping to application address.
-static void get_user_application_entry(uint32_t *appEntry, uint32_t *appStack)
-{
-    assert(appEntry);
-    assert(appStack);
-
-#ifdef BL_TARGET_RAM
-    *appEntry = 0;
-    *appStack = 0;
-#else
-#if FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL
-    // Check if address of SP and PC is in an execute-only region.
-    if (!is_in_execute_only_region(kDefaultVectorTableAddress, 8))
-    {
-        *appEntry = APP_VECTOR_TABLE[kInitialPC];
-        *appStack = APP_VECTOR_TABLE[kInitialSP];
-    }
-    else
-    {
-        // Set to invalid value when vector table is in execute-only region,
-        // as ROM doesn't support jumping to an application in such region so far.
-        // The main purpose of below operation is to prevent ROM from inifinit loop
-        // between NVIC_SystemReset() and fetching SP and PC frome execute-only region.
-        *appEntry = 0;
-        *appStack = 0;
-    }
-#else
-#if BL_FEATURE_RELIABLE_UPDATE
-    if (g_bootloaderContext.imageStart != 0xffffffffu)
-    {
-        uint32_t *appVectorTable = (uint32_t *)g_bootloaderContext.imageStart;
-        *appEntry = appVectorTable[kInitialPC];
-        *appStack = appVectorTable[kInitialSP];
-    }
-    else
-    {
-        *appEntry = 0xffffffffu;
-        *appStack = 0xffffffffu;
-    }
-#else
-    //*appEntry = APP_VECTOR_TABLE[kInitialPC];
-    //*appStack = APP_VECTOR_TABLE[kInitialSP];
-#endif // BL_FEATURE_RELIABLE_UPDATE
-#endif //  FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL
-#endif // BL_TARGET_RAM
-}
-//#endif // BL_FEATURE_TIMEOUT
-static OSA_SR_ALLOC();
-// Function to perform the jump
-void jump_to_hyperflash_location() {
-
-	// Turn off global interrupt
-	OSA_ENTER_CRITICAL();
-
-	// Shutdown microseconds driver.
-//	    PIT->CHANNEL[1].TCTRL = 0; // stop timer 1
-//	    PIT->CHANNEL[0].TCTRL = 0; // stop timer 1
-//	    PIT->CHANNEL[1].LDVAL = 0;
-//	    PIT->CHANNEL[0].LDVAL = 0;
-//	    PIT->MCR |= PIT_MCR_MDIS_MASK;
-
-    // Clear any IRQs that may be enabled, we only want the IRQs we enable to be active
-    //NVIC_ClearEnabledIRQs();
-    NVIC->ICER[0] = 0xFFFFFFFF;
-    NVIC->ICER[1] = 0xFFFFFFFF;
-    NVIC->ICER[2] = 0xFFFFFFFF;
-    NVIC->ICER[3] = 0xFFFFFFFF;
-    NVIC->ICER[4] = 0xFFFFFFFF;
-    NVIC->ICER[5] = 0xFFFFFFFF;
-    NVIC->ICER[6] = 0xFFFFFFFF;
-    NVIC->ICER[7] = 0xFFFFFFFF;
-
-    // Clear any pending IRQs that may have been set
-    //NVIC_ClearAllPendingIRQs();
-    NVIC->ICPR[0] = 0xFFFFFFFF;
-    NVIC->ICPR[1] = 0xFFFFFFFF;
-    NVIC->ICPR[2] = 0xFFFFFFFF;
-    NVIC->ICPR[3] = 0xFFFFFFFF;
-    NVIC->ICPR[4] = 0xFFFFFFFF;
-    NVIC->ICPR[5] = 0xFFFFFFFF;
-    NVIC->ICPR[6] = 0xFFFFFFFF;
-    NVIC->ICPR[7] = 0xFFFFFFFF;
-
-    // Set the VTOR to default.
-	SCB->VTOR = 0;//kDefaultVectorTableAddress;
-
-	 CLOCK_DisableClock(kCLOCK_UsbOh3);
-
-	 // Restore global interrupt.
-	 __enable_irq();
-
-	// Memory barriers for good measure.
-	__ISB();
-	__DSB();
-
-#if 0
-	 uint32_t applicationAddress, stackPointer;
-	 get_user_application_entry(&applicationAddress, &stackPointer);
-    // Create the function call to the user application.
-    // Static variables are needed since changed the stack pointer out from under the compiler
-    // we need to ensure the values we are using are not stored on the previous stack
-    static uint32_t s_stackPointer = 0;
-    s_stackPointer = stackPointer;
-    static void (*farewellBootloader)(void) = 0;
-//    farewellBootloader = (void (*)(void))applicationAddress;
-    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
-
-    // Set the VTOR to the application vector table address.
-//    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
-    SCB->VTOR = 0;
-
-    // Set stack pointers to the application stack pointer.
-    __set_MSP(s_stackPointer);
-    __set_PSP(s_stackPointer);
-
-    // Jump to the application.
-    farewellBootloader();
-#endif
-
-#if 0
-    static void (*farewellBootloader)(void) = 0;
-    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
-
-    //Jump to the application.
-    farewellBootloader();
-#endif
-
-#if 0
-//! @brief Defines a constant for the default vector table.
-enum _vector_table_address
-{
-	//! @brief Address of the default vector table, which is always 0.
-	kDefaultVectorTableAddress = 0
-};
-#define APP_VECTOR_TABLE ((uint32_t *)kDefaultVectorTableAddress)
-
-//    shutdown_cleanup(kShutdownType_Shutdown);
-
-    // Create the function call to the user application.
-    // Static variables are needed since changed the stack pointer out from under the compiler
-    // we need to ensure the values we are using are not stored on the previous stack
-    static uint32_t s_stackPointer = 0;
-    s_stackPointer = 0;
-    static void (*farewellBootloader)(void) = 0;
-//    farewellBootloader = (void (*)(void))applicationAddress;
-    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
-    // Set the VTOR to the application vector table address.
-    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
-
-    // Set stack pointers to the application stack pointer.
-    __set_MSP(s_stackPointer);
-    __set_PSP(s_stackPointer);
-
-    // Jump to the application.
-    farewellBootloader();
-#endif
-
-#if 1
-    //__asm("ldr pc, =0x60082305");
-    __asm("ldr r0, =0x60080305"); // Load the address into register r0
-    __asm("bx r0");               // Branch to the address stored in r0
-
-    while(1)
-	{
-
-	}
 #endif
 }
 void Initialization(void)
