@@ -2,6 +2,6 @@
 ../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:68:20:USB_HostControllerTaskFunction	16	static
 ../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:84:9:USB_HostMsdInitializeDisk	32	static
 ../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:151:9:USB_HostMsdGetDiskStatus	16	static
-../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:156:9:USB_HostMsdReadDisk	64	static
-../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:225:9:USB_HostMsdWriteDisk	64	static
+../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:156:9:USB_HostMsdReadDisk	72	static
+../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:225:9:USB_HostMsdWriteDisk	72	static
 ../fatfs/source/fsl_usb_disk/fsl_usb_disk_bm.c:294:9:USB_HostMsdIoctlDisk	40	static

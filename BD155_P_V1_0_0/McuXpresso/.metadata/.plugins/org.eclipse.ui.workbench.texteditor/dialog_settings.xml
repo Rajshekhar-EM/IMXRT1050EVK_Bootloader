@@ -6,8 +6,9 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="__NVIC_GetEnableIRQ"/>
+		<item key="selection" value="BOARD_ConfigMPU"/>
 		<list key="findhistory">
+			<item value="BOARD_ConfigMPU"/>
 			<item value="NVIC_ClearEnabledIRQs"/>
 			<item value="f_gets"/>
 			<item value="_DAY_Copy"/>
@@ -22,7 +23,6 @@
 			<item value="funcI2cRead"/>
 			<item value="funcI2cWrite"/>
 			<item value="funcreadADCValues"/>
-			<item value="funcMax22190Device1Process"/>
 		</list>
 		<list key="replacehistory">
 			<item value="2_DAY"/>

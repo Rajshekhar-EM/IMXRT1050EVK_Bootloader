@@ -23,7 +23,7 @@
 	    uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits);
 	    uint8_t ASCII2HEX(uint8_t character);
 
-	    bool bl_pwr_on = 0;
+	    uint8_t bl_pwr_on = 0;
 	    uint16_t bl_tm_cntr = 0;
 
 	    void jump_to_hyperflash_location(uint32_t applicationAddress);
@@ -533,8 +533,11 @@
 	    error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
 	    */
 //	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
-	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);//WORKING
+//	    error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
+	    error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	    if(error == FR_OK)
 	    {
@@ -715,7 +718,7 @@
 	// Define the address to jump to in HyperFlash memory
 	//#define JUMP_ADDRESS 0x6000DFB4 // Example address, replace with your desired address
 
-	#define JUMP_ADDRESS  0x60082305//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
+	#define JUMP_ADDRESS  0x60080305//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
 	// Function to perform the jump
 	void jump_to_hyperflash_location(uint32_t applicationAddress) {
 
@@ -1894,6 +1897,8 @@ int main(void)
 }
 void Initialization(void)
 {
+	bl_pwr_on = 1;
+
     BOARD_ConfigMPU();
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
@@ -1903,12 +1908,12 @@ void Initialization(void)
     BOARD_InitGPT();
 //	SysTick_Config(SystemCoreClock / 100); //1ms systick
 
-	bl_pwr_on = 1;
-	HyperFlash();//initialization and erasing
 
-	USB_HostApplicationInit();
+//	HyperFlash();//initialization and erasing
+//	USB_HostApplicationInit();
+//	app_finalize();
 
-	app_finalize();
+    dummy();
 #if 0
 	/*CanaFrameConfigure();*/
 	KeypadConfig();
@@ -1953,20 +1958,6 @@ void Initialization(void)
 
 //	HyperFlash();//initialization and erasing
 //	app_finalize();
-
-
-//	if(bl_pwr_on == 0)
-//	{
-//		HyperFlash();//initialization and erasing
-//		app_finalize();
-//	}
-//	else
-//	{
-//		//SysTick_Config(SystemCoreClock / 100); //1ms systick
-//		jump_to_hyperflash_location();
-//	}
-
-
 	/*while(1)
 	{
 		USB_HostTaskFn(g_HostHandle);
@@ -1992,7 +1983,19 @@ void Initialization(void)
 
 }
 
-
+void dummy(void)
+{
+	if(bl_pwr_on == 0)
+	{
+		HyperFlash();//initialization and erasing
+		USB_HostApplicationInit();
+		app_finalize();
+	}
+	else if(bl_pwr_on == 1)
+	{
+		jump_to_hyperflash_location(JUMP_ADDRESS);
+	}
+}
 int funcSdCardApplication(void)
 {
     const TCHAR driverNumberBuffer[3U] = {SDDISK + '0', ':', '/'};
