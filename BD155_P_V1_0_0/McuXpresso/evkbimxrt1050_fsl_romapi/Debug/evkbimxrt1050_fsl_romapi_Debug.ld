@@ -6,7 +6,7 @@
  * Generated linker script file for MIMXRT1052xxxxB
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v11.6.1 [Build 8255] [2022-10-03] on 18-Mar-2024, 6:36:29 PM
+ * MCUXpresso IDE v11.6.1 [Build 8255] [2022-10-03] on 19-Mar-2024, 2:23:50 PM
  */
 
 INCLUDE "evkbimxrt1050_fsl_romapi_Debug_library.ld"
@@ -16,23 +16,7 @@ ENTRY(ResetISR)
 
 SECTIONS
 {
-     /* Image Vector Table and Boot Data for booting from external flash */
-    .boot_hdr : ALIGN(4)
-    {
-        FILL(0xff)
-        __boot_hdr_start__ = ABSOLUTE(.) ;
-        KEEP(*(.boot_hdr.conf))
-        . = 0x1000 ;
-        KEEP(*(.boot_hdr.ivt))
-        . = 0x1020 ;
-        KEEP(*(.boot_hdr.boot_data))
-        . = 0x1030 ;
-        KEEP(*(.boot_hdr.dcd_data))
-        __boot_hdr_end__ = ABSOLUTE(.) ;
-        . = 0x2000 ;
-    } >BOARD_FLASH
-
-    /* MAIN TEXT SECTION */
+     /* MAIN TEXT SECTION */
     .text : ALIGN(4)
     {
         FILL(0xff)
@@ -78,27 +62,27 @@ SECTIONS
        *(.text*)
        *(.rodata .rodata.* .constdata .constdata.*)
        . = ALIGN(4);
-    } > BOARD_FLASH
+    } > SRAM_ITC
  
     _etext = .;
         
-    /* DATA section for NCACHE_REGION */
+    /* DATA section for BOARD_SDRAM */
 
     .data_RAM2 : ALIGN(4)
     {
         FILL(0xff)
         PROVIDE(__start_data_RAM2 = .) ;
-        PROVIDE(__start_data_NCACHE_REGION = .) ;
+        PROVIDE(__start_data_BOARD_SDRAM = .) ;
         *(.ramfunc.$RAM2)
-        *(.ramfunc.$NCACHE_REGION)
+        *(.ramfunc.$BOARD_SDRAM)
         *(.data.$RAM2)
-        *(.data.$NCACHE_REGION)
+        *(.data.$BOARD_SDRAM)
         *(.data.$RAM2.*)
-        *(.data.$NCACHE_REGION.*)
+        *(.data.$BOARD_SDRAM.*)
         . = ALIGN(4) ;
         PROVIDE(__end_data_RAM2 = .) ;
-        PROVIDE(__end_data_NCACHE_REGION = .) ;
-     } > NCACHE_REGION AT>BOARD_FLASH
+        PROVIDE(__end_data_BOARD_SDRAM = .) ;
+     } > BOARD_SDRAM AT>SRAM_ITC
 
     /* DATA section for SRAM_DTC */
 
@@ -109,7 +93,6 @@ SECTIONS
         PROVIDE(__start_data_SRAM_DTC = .) ;
         *(.ramfunc.$RAM3)
         *(.ramfunc.$SRAM_DTC)
-       *(NonCacheable.init)
         *(.data.$RAM3)
         *(.data.$SRAM_DTC)
         *(.data.$RAM3.*)
@@ -117,43 +100,43 @@ SECTIONS
         . = ALIGN(4) ;
         PROVIDE(__end_data_RAM3 = .) ;
         PROVIDE(__end_data_SRAM_DTC = .) ;
-     } > SRAM_DTC AT>BOARD_FLASH
+     } > SRAM_DTC AT>SRAM_ITC
 
-    /* DATA section for SRAM_ITC */
+    /* DATA section for SRAM_OC */
 
     .data_RAM4 : ALIGN(4)
     {
         FILL(0xff)
         PROVIDE(__start_data_RAM4 = .) ;
-        PROVIDE(__start_data_SRAM_ITC = .) ;
+        PROVIDE(__start_data_SRAM_OC = .) ;
         *(.ramfunc.$RAM4)
-        *(.ramfunc.$SRAM_ITC)
+        *(.ramfunc.$SRAM_OC)
         *(.data.$RAM4)
-        *(.data.$SRAM_ITC)
+        *(.data.$SRAM_OC)
         *(.data.$RAM4.*)
-        *(.data.$SRAM_ITC.*)
+        *(.data.$SRAM_OC.*)
         . = ALIGN(4) ;
         PROVIDE(__end_data_RAM4 = .) ;
-        PROVIDE(__end_data_SRAM_ITC = .) ;
-     } > SRAM_ITC AT>BOARD_FLASH
+        PROVIDE(__end_data_SRAM_OC = .) ;
+     } > SRAM_OC AT>SRAM_ITC
 
-    /* DATA section for SRAM_OC */
+    /* DATA section for NCACHE_REGION */
 
     .data_RAM5 : ALIGN(4)
     {
         FILL(0xff)
         PROVIDE(__start_data_RAM5 = .) ;
-        PROVIDE(__start_data_SRAM_OC = .) ;
+        PROVIDE(__start_data_NCACHE_REGION = .) ;
         *(.ramfunc.$RAM5)
-        *(.ramfunc.$SRAM_OC)
+        *(.ramfunc.$NCACHE_REGION)
         *(.data.$RAM5)
-        *(.data.$SRAM_OC)
+        *(.data.$NCACHE_REGION)
         *(.data.$RAM5.*)
-        *(.data.$SRAM_OC.*)
+        *(.data.$NCACHE_REGION.*)
         . = ALIGN(4) ;
         PROVIDE(__end_data_RAM5 = .) ;
-        PROVIDE(__end_data_SRAM_OC = .) ;
-     } > SRAM_OC AT>BOARD_FLASH
+        PROVIDE(__end_data_NCACHE_REGION = .) ;
+     } > NCACHE_REGION AT>SRAM_ITC
 
     /* MAIN DATA SECTION */
     .uninit_RESERVED (NOLOAD) : ALIGN(4)
@@ -162,47 +145,47 @@ SECTIONS
         KEEP(*(.bss.$RESERVED*))
        . = ALIGN(4) ;
         _end_uninit_RESERVED = .;
-    } > BOARD_SDRAM AT> BOARD_SDRAM
+    } > SRAM_ITC AT> SRAM_ITC
 
-    /* Main DATA section (BOARD_SDRAM) */
+    /* Main DATA section (SRAM_ITC) */
     .data : ALIGN(4)
     {
        FILL(0xff)
        _data = . ;
        PROVIDE(__start_data_RAM = .) ;
-       PROVIDE(__start_data_BOARD_SDRAM = .) ;
+       PROVIDE(__start_data_SRAM_ITC = .) ;
        *(vtable)
        *(.ramfunc*)
        KEEP(*(CodeQuickAccess))
        KEEP(*(DataQuickAccess))
        *(RamFunction)
+       *(NonCacheable.init)
        *(.data*)
        . = ALIGN(4) ;
        _edata = . ;
        PROVIDE(__end_data_RAM = .) ;
-       PROVIDE(__end_data_BOARD_SDRAM = .) ;
-    } > BOARD_SDRAM AT>BOARD_FLASH
+       PROVIDE(__end_data_SRAM_ITC = .) ;
+    } > SRAM_ITC AT>SRAM_ITC
 
-    /* BSS section for NCACHE_REGION */
+    /* BSS section for BOARD_SDRAM */
     .bss_RAM2 : ALIGN(4)
     {
        PROVIDE(__start_bss_RAM2 = .) ;
-       PROVIDE(__start_bss_NCACHE_REGION = .) ;
+       PROVIDE(__start_bss_BOARD_SDRAM = .) ;
        *(.bss.$RAM2)
-       *(.bss.$NCACHE_REGION)
+       *(.bss.$BOARD_SDRAM)
        *(.bss.$RAM2.*)
-       *(.bss.$NCACHE_REGION.*)
+       *(.bss.$BOARD_SDRAM.*)
        . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM2 = .) ;
-       PROVIDE(__end_bss_NCACHE_REGION = .) ;
-    } > NCACHE_REGION AT> NCACHE_REGION
+       PROVIDE(__end_bss_BOARD_SDRAM = .) ;
+    } > BOARD_SDRAM AT> BOARD_SDRAM
 
     /* BSS section for SRAM_DTC */
     .bss_RAM3 : ALIGN(4)
     {
        PROVIDE(__start_bss_RAM3 = .) ;
        PROVIDE(__start_bss_SRAM_DTC = .) ;
-       *(NonCacheable)
        *(.bss.$RAM3)
        *(.bss.$SRAM_DTC)
        *(.bss.$RAM3.*)
@@ -212,62 +195,63 @@ SECTIONS
        PROVIDE(__end_bss_SRAM_DTC = .) ;
     } > SRAM_DTC AT> SRAM_DTC
 
-    /* BSS section for SRAM_ITC */
+    /* BSS section for SRAM_OC */
     .bss_RAM4 : ALIGN(4)
     {
        PROVIDE(__start_bss_RAM4 = .) ;
-       PROVIDE(__start_bss_SRAM_ITC = .) ;
+       PROVIDE(__start_bss_SRAM_OC = .) ;
        *(.bss.$RAM4)
-       *(.bss.$SRAM_ITC)
+       *(.bss.$SRAM_OC)
        *(.bss.$RAM4.*)
-       *(.bss.$SRAM_ITC.*)
+       *(.bss.$SRAM_OC.*)
        . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM4 = .) ;
-       PROVIDE(__end_bss_SRAM_ITC = .) ;
-    } > SRAM_ITC AT> SRAM_ITC
+       PROVIDE(__end_bss_SRAM_OC = .) ;
+    } > SRAM_OC AT> SRAM_OC
 
-    /* BSS section for SRAM_OC */
+    /* BSS section for NCACHE_REGION */
     .bss_RAM5 : ALIGN(4)
     {
        PROVIDE(__start_bss_RAM5 = .) ;
-       PROVIDE(__start_bss_SRAM_OC = .) ;
+       PROVIDE(__start_bss_NCACHE_REGION = .) ;
        *(.bss.$RAM5)
-       *(.bss.$SRAM_OC)
+       *(.bss.$NCACHE_REGION)
        *(.bss.$RAM5.*)
-       *(.bss.$SRAM_OC.*)
+       *(.bss.$NCACHE_REGION.*)
        . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM5 = .) ;
-       PROVIDE(__end_bss_SRAM_OC = .) ;
-    } > SRAM_OC AT> SRAM_OC
+       PROVIDE(__end_bss_NCACHE_REGION = .) ;
+    } > NCACHE_REGION AT> NCACHE_REGION
 
     /* MAIN BSS SECTION */
     .bss : ALIGN(4)
     {
         _bss = .;
         PROVIDE(__start_bss_RAM = .) ;
-        PROVIDE(__start_bss_BOARD_SDRAM = .) ;
+        PROVIDE(__start_bss_SRAM_ITC = .) ;
+       *(NonCacheable)
         *(.bss*)
         *(COMMON)
         . = ALIGN(4) ;
         _ebss = .;
         PROVIDE(__end_bss_RAM = .) ;
-        PROVIDE(__end_bss_BOARD_SDRAM = .) ;
+        PROVIDE(__end_bss_SRAM_ITC = .) ;
         PROVIDE(end = .);
-    } > BOARD_SDRAM AT> BOARD_SDRAM
+    } > SRAM_ITC AT> SRAM_ITC
 
-    /* NOINIT section for NCACHE_REGION */
+    /* NOINIT section for BOARD_SDRAM */
     .noinit_RAM2 (NOLOAD) : ALIGN(4)
     {
        PROVIDE(__start_noinit_RAM2 = .) ;
-       PROVIDE(__start_noinit_NCACHE_REGION = .) ;
+       PROVIDE(__start_noinit_BOARD_SDRAM = .) ;
        *(.noinit.$RAM2)
-       *(.noinit.$NCACHE_REGION)
+       *(.noinit.$BOARD_SDRAM)
        *(.noinit.$RAM2.*)
-       *(.noinit.$NCACHE_REGION.*)
+       *(.noinit.$BOARD_SDRAM.*)
        . = ALIGN(4) ;
        PROVIDE(__end_noinit_RAM2 = .) ;
-       PROVIDE(__end_noinit_NCACHE_REGION = .) ;
-    } > NCACHE_REGION AT> NCACHE_REGION
+       PROVIDE(__end_noinit_BOARD_SDRAM = .) ;
+    } > BOARD_SDRAM AT> BOARD_SDRAM
 
     /* NOINIT section for SRAM_DTC */
     .noinit_RAM3 (NOLOAD) : ALIGN(4)
@@ -283,46 +267,46 @@ SECTIONS
        PROVIDE(__end_noinit_SRAM_DTC = .) ;
     } > SRAM_DTC AT> SRAM_DTC
 
-    /* NOINIT section for SRAM_ITC */
+    /* NOINIT section for SRAM_OC */
     .noinit_RAM4 (NOLOAD) : ALIGN(4)
     {
        PROVIDE(__start_noinit_RAM4 = .) ;
-       PROVIDE(__start_noinit_SRAM_ITC = .) ;
+       PROVIDE(__start_noinit_SRAM_OC = .) ;
        *(.noinit.$RAM4)
-       *(.noinit.$SRAM_ITC)
+       *(.noinit.$SRAM_OC)
        *(.noinit.$RAM4.*)
-       *(.noinit.$SRAM_ITC.*)
+       *(.noinit.$SRAM_OC.*)
        . = ALIGN(4) ;
        PROVIDE(__end_noinit_RAM4 = .) ;
-       PROVIDE(__end_noinit_SRAM_ITC = .) ;
-    } > SRAM_ITC AT> SRAM_ITC
+       PROVIDE(__end_noinit_SRAM_OC = .) ;
+    } > SRAM_OC AT> SRAM_OC
 
-    /* NOINIT section for SRAM_OC */
+    /* NOINIT section for NCACHE_REGION */
     .noinit_RAM5 (NOLOAD) : ALIGN(4)
     {
        PROVIDE(__start_noinit_RAM5 = .) ;
-       PROVIDE(__start_noinit_SRAM_OC = .) ;
+       PROVIDE(__start_noinit_NCACHE_REGION = .) ;
        *(.noinit.$RAM5)
-       *(.noinit.$SRAM_OC)
+       *(.noinit.$NCACHE_REGION)
        *(.noinit.$RAM5.*)
-       *(.noinit.$SRAM_OC.*)
+       *(.noinit.$NCACHE_REGION.*)
        . = ALIGN(4) ;
        PROVIDE(__end_noinit_RAM5 = .) ;
-       PROVIDE(__end_noinit_SRAM_OC = .) ;
-    } > SRAM_OC AT> SRAM_OC
+       PROVIDE(__end_noinit_NCACHE_REGION = .) ;
+    } > NCACHE_REGION AT> NCACHE_REGION
 
     /* DEFAULT NOINIT SECTION */
     .noinit (NOLOAD): ALIGN(4)
     {
         _noinit = .;
         PROVIDE(__start_noinit_RAM = .) ;
-        PROVIDE(__start_noinit_BOARD_SDRAM = .) ;
+        PROVIDE(__start_noinit_SRAM_ITC = .) ;
         *(.noinit*)
          . = ALIGN(4) ;
         _end_noinit = .;
        PROVIDE(__end_noinit_RAM = .) ;
-       PROVIDE(__end_noinit_BOARD_SDRAM = .) ;        
-    } > BOARD_SDRAM AT> BOARD_SDRAM
+       PROVIDE(__end_noinit_SRAM_ITC = .) ;        
+    } > SRAM_ITC AT> SRAM_ITC
 
     /*
      * for exception handling/unwind - some Newlib functions (in common
@@ -331,14 +315,14 @@ SECTIONS
     .ARM.extab : ALIGN(4)
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
-    } > BOARD_FLASH
+    } > SRAM_ITC
 
     .ARM.exidx : ALIGN(4)
     {
         __exidx_start = .;
         *(.ARM.exidx* .gnu.linkonce.armexidx.*)
         __exidx_end = .;
-    } > BOARD_FLASH
+    } > SRAM_ITC
 
     /* Reserve and place Heap within memory map */
     _HeapSize = 0x1000;
@@ -348,21 +332,21 @@ SECTIONS
         . += _HeapSize;
         . = ALIGN(4);
         _pvHeapLimit = .;
-    } > SRAM_DTC
+    } > SRAM_ITC
 
      _StackSize = 0x1000;
      /* Reserve space in memory for Stack */
     .heap2stackfill  :
     {
         . += _StackSize;
-    } > SRAM_DTC
+    } > SRAM_ITC
     /* Locate actual Stack in memory map */
-    .stack ORIGIN(SRAM_DTC) + LENGTH(SRAM_DTC) - _StackSize - 0:  ALIGN(4)
+    .stack ORIGIN(SRAM_ITC) + LENGTH(SRAM_ITC) - _StackSize - 0:  ALIGN(4)
     {
         _vStackBase = .;
         . = ALIGN(4);
         _vStackTop = . + _StackSize;
-    } > SRAM_DTC
+    } > SRAM_ITC
 
     /* Provide basic symbols giving location and size of main text
      * block, including initial values of RW data sections. Note that

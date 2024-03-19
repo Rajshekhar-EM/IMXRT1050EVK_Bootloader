@@ -790,9 +790,11 @@ void flexspi_nor_handle_cache(bool isPre, flexspi_cache_status_t cacheStatus)
 	    */
 //	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 //		error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
-		error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
+//		error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
+		error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	    if(error == FR_OK)
 	    {
@@ -1297,13 +1299,13 @@ int main(void)
 
 void dummy(void)
 {
-	//if(bl_pwr_on == 0)
+	if(bl_pwr_on == 0)
 	{
 		HyperFlash();//initialization and erasing
 		app_finalize();
 	}
-//	else if(bl_pwr_on == 1)
-//	{
-//		jump_to_hyperflash_location(JUMP_ADDRESS);
-//	}
+	else if(bl_pwr_on == 1)
+	{
+		jump_to_hyperflash_location(JUMP_ADDRESS);
+	}
 }

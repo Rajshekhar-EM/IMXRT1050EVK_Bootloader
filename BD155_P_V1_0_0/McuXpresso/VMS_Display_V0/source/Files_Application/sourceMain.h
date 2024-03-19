@@ -18,7 +18,6 @@
 	 * Prototypes
 	 ******************************************************************************/
 
-
 	    uint32_t NorAddress;        /* Address of the serial nor device location */
 	    uint32_t FlexSPINorAddress; /* Address of the serial nor device in FLEXSPI memory */
 
@@ -151,9 +150,9 @@ SDK_ALIGN(uint8_t g_bufferRead[17], BOARD_SDMMC_DATA_BUFFER_ALIGN_SIZE);
 //uint8_t f_bufferRead[100000];
 uint8_t f_bufferRead[33];
 uint8_t lineBuffer[128];
-uint8_t programable_buffer[512];
+//uint8_t programable_buffer[512];
+uint8_t programable_buffer[SEC_16KB];
 uint8_t temp_buffer[16];
-
 
 FRESULT error;
 DIR directory; /* Directory object */

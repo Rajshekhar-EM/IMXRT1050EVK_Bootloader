@@ -57,7 +57,7 @@
 												 FSL_ROM_FLEXSPI_BITMASK(kFLEXSPIMiscOffset_SafeConfigFreqEnable) |
 												 FSL_ROM_FLEXSPI_BITMASK(kFLEXSPIMiscOffset_DdrModeEnable);
 		config->memConfig.sflashPadType = kSerialFlash_8Pads; /* Pad Type: 1 - Single, 2 - Dual, 4 - Quad, 8 - Octal */
-		config->pageSize                = FLASH_PAGE_SIZE;
+		config->pageSize                = SEC_16KB;//FLASH_PAGE_SIZE;
 		config->sectorSize              = FLASH_SECTOR_SIZE;
 		config->blockSize               = FLASH_BLOCK_SIZE;
 		config->isUniformBlockSize      = true;
@@ -535,10 +535,174 @@
 //	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
 //	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);//WORKING
+	    error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);//WORKING
 //	    error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
-	    error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
+//	    error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
 
+	    if(error == FR_OK)
+	    {
+		    kg = 0;
+	    	NorAddress = 0x80000;
+			FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+			while(f_gets((char *)lineBuffer, sizeof(lineBuffer), &g_fileObject1))
+			{
+				if(lineBuffer[0] == ':')
+				{
+					/*
+					no_bytes  = (lineBuffer[1]-48)*10;
+					no_bytes += (lineBuffer[2]-48);
+
+					address   = (lineBuffer[3]-48)*1000;
+					address  += (lineBuffer[4]-48)*100;
+					address  += (lineBuffer[5]-48)*10;
+					address  += (lineBuffer[6]-48);
+
+					record_type = (lineBuffer[7]-48)*10;
+					record_type+= (lineBuffer[8]-48);
+					*/
+					no_bytes = AsciiToDecimal(1,2);
+					address  = AsciiToDecimal(3,4);
+					record_type = AsciiToDecimal(7,2);
+
+					if(record_type == 0x00 || record_type == 0x01)
+					{
+						/*Data record*//*End of file record*/
+						gh = 9;
+						for(ij = 0; ij < no_bytes;ij++,gh+=2,kg++)
+						{
+							temp_buffer[ij] = AsciiToDecimal(gh,2);
+							programable_buffer[kg] = temp_buffer[ij];
+							funcDelayUs(1);
+						}
+
+						if(kg >= SEC_16KB || record_type == 0x01)
+						{
+							if(record_type == 0x01)
+							{
+
+								PRINTF("\r\n Program a buffer to a page of NOR flash");
+								/* Prepare user buffer. */
+								for (i = 0; i < kg; i++)
+								{
+									s_buffer[i] = programable_buffer[i];
+								}
+
+								norConfig.pageSize = kg;
+								/* Program user buffer into FLEXSPI NOR flash */
+								status =
+									ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+								if (status != kStatus_Success)
+								{
+									PRINTF("\r\n Page program failure!\r\n");
+									error_trap();
+								}
+
+								funcDelayUs(1);
+								DCACHE_InvalidateByRange(FlexSPINorAddress, kg);
+								/* Verify programming by reading back from FLEXSPI memory directly */
+								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), kg);
+								if (memcmp(s_buffer_rbc, s_buffer, kg) == 0)
+								{
+									PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+										   (FlexSPINorAddress), (FlexSPINorAddress + kg));
+								}
+								else
+								{
+									PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+									error_trap();
+								}
+
+//								NorAddress        = 512 + NorAddress;
+//								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+							}
+							else
+							{
+								kg = 0;
+
+								PRINTF("\r\n Program a buffer to a page of NOR flash");
+								/* Prepare user buffer. */
+								for (i = 0; i < BUFFER_LEN; i++)
+								{
+									s_buffer[i] = programable_buffer[i];
+								}
+
+								/* Program user buffer into FLEXSPI NOR flash */
+								status =
+									ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+								if (status != kStatus_Success)
+								{
+									PRINTF("\r\n Page program failure!\r\n");
+									error_trap();
+								}
+
+								funcDelayUs(1);
+								DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
+								/* Verify programming by reading back from FLEXSPI memory directly */
+								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
+								if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
+								{
+									PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+										   (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
+								}
+								else
+								{
+									PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+									//error_trap();
+								}
+
+								NorAddress        = SEC_16KB + NorAddress;
+								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+							}
+
+							memset(&programable_buffer,0,sizeof(programable_buffer));
+							memset(&temp_buffer,0,sizeof(temp_buffer));
+							memset(&s_buffer,0,sizeof(s_buffer));
+							memset(&s_buffer_rbc,0,sizeof(s_buffer_rbc));
+							funcDelayUs(1);
+						}
+					}
+					else if(record_type == 0x04)
+					{
+						/*Extended linear address record*/
+						ix = 9;
+						for(fg = 0; fg < no_bytes;ix+=2/*1byte*/,fg++)
+						{
+							extnd_addr_arr[fg] = AsciiToDecimal(ix,2);
+						}
+						/*
+						extended_address = extnd_addr_arr[0];
+						extended_address = (extended_address << 8) | extnd_addr_arr[1];
+						*/
+						extended_address = extnd_addr_arr[0];
+						extended_address = extended_address << 8;
+						extended_address = extended_address | extnd_addr_arr[1];
+						memset(&extnd_addr_arr,0,sizeof(extnd_addr_arr));
+					}
+					else if(record_type == 0x05)
+					{
+						/*Jump address mentioned in the address field*/
+						ix = 9;
+						for(fg = 0; fg < no_bytes;ix+=2/*1byte*/,fg++)
+						{
+							jump_addr_arr[fg] = AsciiToDecimal(ix,2);
+						}
+
+						jump_address = jump_addr_arr[0];
+        				jump_address = jump_address << 8;
+						jump_address = jump_address | jump_addr_arr[1];
+						jump_address = jump_address << 8;
+						jump_address = jump_address | jump_addr_arr[2];
+						jump_address = jump_address << 8;
+						jump_address = jump_address | jump_addr_arr[3];
+						memset(&jump_addr_arr,0,sizeof(jump_addr_arr));
+					}
+
+					f_sync(&g_fileObject1);
+					memset(&lineBuffer,0,sizeof(lineBuffer));
+				}
+			}
+	    }
+#if 0
 	    if(error == FR_OK)
 	    {
 		    kg = 0;
@@ -702,6 +866,7 @@
 				}
 			}
 	    }
+#endif
 		f_close(&g_fileObject1);
 		//f_closedir(&pendrive_dir);
 
@@ -1909,9 +2074,9 @@ void Initialization(void)
 //	SysTick_Config(SystemCoreClock / 100); //1ms systick
 
 
-//	HyperFlash();//initialization and erasing
-//	USB_HostApplicationInit();
-//	app_finalize();
+	//HyperFlash();//initialization and erasing
+	//USB_HostApplicationInit();
+	//app_finalize();
 
     dummy();
 #if 0
