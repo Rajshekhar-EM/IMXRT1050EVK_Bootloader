@@ -13,8 +13,6 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
-
 #include "usb_host_config.h"
 #include "usb_host.h"
 #include "fsl_device_registers.h"
@@ -33,16 +31,9 @@
 #endif
 
 #include "usb_phy.h"
-
 #include "app.h"
 
 extern uint8_t usb_attached;
-
-void HyperFlash(void);
-void ReadFromPendrive(void);
-void jump_to_hyperflash_location();
-void funcDelayUs(Uint32 llTick);
-uint8_t decimalToBCD(uint8_t decimal);
 
 /*******************************************************************************
  * Definitions
@@ -259,33 +250,74 @@ static void USB_HostApplicationInit(void)
 
     usb_echo("host init done\r\n");
 }
-
-
 /********************************************************************************/
-
+/*********************************HyperFlash***********************************/
 #include "fsl_romapi.h"
 #include "fsl_debug_console.h"
 #include "fsl_cache.h"
-
+#include "pin_mux.h"
+#include "clock_config.h"
+#include "board.h"
+#include "fsl_common.h"
 /*${header:start}*/
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 /*${macro:start}*/
-#define FlexSpiInstance           0U
-#define EXAMPLE_FLEXSPI_AMBA_BASE FlexSPI_AMBA_BASE
-#define FLASH_SIZE                0x4000000UL /* 64MBytes */
-#define FLASH_PAGE_SIZE           512UL       /* 512Bytes */
-#define FLASH_SECTOR_SIZE         0x40000UL   /* 256KBytes */
-#define FLASH_BLOCK_SIZE          0x40000UL   /* 256KBytes */
-#include "pin_mux.h"
-#include "clock_config.h"
-#include "board.h"
-#include "fsl_common.h"
-/*******************************************************************************
- * Definitions
- ******************************************************************************/
-#define BUFFER_LEN FLASH_PAGE_SIZE
+#define PRGM_PAGE_SIZE 			  	512//added by Raj
+#define FlexSpiInstance           	0U
+#define EXAMPLE_FLEXSPI_AMBA_BASE 	FlexSPI_AMBA_BASE
+#define FLASH_SIZE                	0x4000000UL /* 64MBytes */
+#define FLASH_PAGE_SIZE           	PRGM_PAGE_SIZE//512UL       /* 512Bytes */
+#define FLASH_SECTOR_SIZE         	0x40000UL   /* 256KBytes */
+#define FLASH_BLOCK_SIZE          	0x40000UL   /* 256KBytes */
+
+#define BUFFER_LEN 				  	FLASH_PAGE_SIZE
+
+#define APP_WRITE_START_ADDR	  	0x80000
+// Define the address to jump to in HyperFlash memory
+#define JUMP_ADDRESS  				0x60080305
+
+#define DATA_RECORD					0x00
+#define E_O_F						0x01
+#define EXTENDED_LINEAR_ADDR		0x04
+#define APP_ENTRY_ADDR				0x05
+
+uint32_t extended_address = 0;
+uint32_t jump_address = 0;
+
+uint8_t extnd_addr_arr[10];
+uint8_t jump_addr_arr[10];
+
+uint32_t hyperflash_addr = 0;
+uint16_t hyper_sec_no = 0, gh = 0, ij = 0, kg = 0;
+uint8_t no_bytes = 0, record_type = 0;
+uint32_t address = 0;
+uint8_t data_temp = 0;
+
+uint32_t NorAddress;        /* Address of the serial nor device location */
+uint32_t FlexSPINorAddress; /* Address of the serial nor device in FLEXSPI memory */
+
+uint8_t bl_pwr_on = 0;
+uint16_t bl_tm_cntr = 0;
+
+uint8_t f_bufferRead[33];
+uint8_t lineBuffer[128];
+uint8_t programable_buffer[BUFFER_LEN];
+uint8_t temp_buffer[16];
+
+FRESULT error;
+FIL g_fileObject1;
+
+
+uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits);
+uint8_t ASCII2HEX(uint8_t character);
+void HyperFlash(void);
+void ReadFromPendrive(void);
+void jump_to_hyperflash_location(uint32_t applicationAddress);
+void funcDelayUs(uint32_t llTick);
+uint8_t decimalToBCD(uint8_t decimal);
+void dummy(void);
 
 /*******************************************************************************
  * Prototypes
@@ -636,88 +668,64 @@ void flexspi_nor_handle_cache(bool isPre, flexspi_cache_status_t cacheStatus)
     }
 }
 
-/*********************************HyperFlash***********************************/
-
-	    uint32_t hyperflash_addr = 0;
-	    uint16_t hyper_sec_no = 0, gh = 0, ij = 0, kg = 0;
-	    uint8_t no_bytes = 0, record_type = 0;
-	    uint32_t address = 0;
-	    uint32_t Decimal_data = 0,DecimalMSB = 0,DecimalLSB = 0;
-	    uint8_t data_temp = 0;
-	    uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits);
-	    uint8_t ASCII2HEX(uint8_t character);
-
-	    uint32_t NorAddress;        /* Address of the serial nor device location */
-		uint32_t FlexSPINorAddress; /* Address of the serial nor device in FLEXSPI memory */
-
-	    uint8_t bl_pwr_on = 0;
-	    uint16_t bl_tm_cntr = 0;
-
-	    uint8_t f_bufferRead[33];
-	    uint8_t lineBuffer[128];
-	    uint8_t programable_buffer[512];
-	    uint8_t temp_buffer[16];
-
-	    FRESULT error;
-	    FIL g_fileObject1;
-
-	void HyperFlash(void)
-	{
-	    status_t status;
-	    uint32_t i = 0U;
-	    uint32_t serialNorAddress;        /* Address of the serial nor device location */
-	    uint32_t FlexSPISerialNorAddress; /* Address of the serial nor device in FLEXSPI memory */
-	    uint32_t serialNorTotalSize;
-	    uint32_t serialNorSectorSize;
-	    uint32_t serialNorPageSize;
 
 
-/*	    //BOARD_ConfigMPU();
-	    BOARD_InitBootPins();
-	    BOARD_InitBootClocks();
-	    USB_HostApplicationInit();
+void HyperFlash(void)
+{
+	status_t status;
+	uint32_t i = 0U;
+	uint32_t serialNorAddress;        /* Address of the serial nor device location */
+	uint32_t FlexSPISerialNorAddress; /* Address of the serial nor device in FLEXSPI memory */
+	uint32_t serialNorTotalSize;
+	uint32_t serialNorSectorSize;
+	uint32_t serialNorPageSize;
+
+	/*//BOARD_ConfigMPU();
+		BOARD_InitBootPins();
+		BOARD_InitBootClocks();
+		USB_HostApplicationInit();
 	#if !(defined(XIP_EXTERNAL_FLASH) && (XIP_EXTERNAL_FLASH == 1))
-	    BOARD_SetupFlexSpiClock();
+		BOARD_SetupFlexSpiClock();
 	#endif
-	    BOARD_InitDebugConsole();
-*/
+		BOARD_InitDebugConsole();
+	*/
 
-	    PRINTF("\r\n FLEXSPI NOR example started!\r\n");
+	PRINTF("\r\n FLEXSPI NOR example started!\r\n");
 
-	    flexspi_cache_status_t cacheStatus;
-	    get_cache_status(&cacheStatus);
+	flexspi_cache_status_t cacheStatus;
+	get_cache_status(&cacheStatus);
 
-	    /* Clean up FLEXSPI NOR flash driver Structure */
-	    memset(&norConfig, 0, sizeof(flexspi_nor_config_t));
+	/* Clean up FLEXSPI NOR flash driver Structure */
+	memset(&norConfig, 0, sizeof(flexspi_nor_config_t));
 
-	    /* Setup FLEXSPI NOR Configuration Block */
-	    FLEXSPI_NorFlash_GetConfig(&norConfig);
+	/* Setup FLEXSPI NOR Configuration Block */
+	FLEXSPI_NorFlash_GetConfig(&norConfig);
 
-	    /* Initializes the FLEXSPI module for the other FLEXSPI APIs */
-	    status = ROM_FLEXSPI_NorFlash_Init(FlexSpiInstance, &norConfig);
-	    if (status == kStatus_Success)
-	    {
-	        PRINTF("\r\n Successfully init FLEXSPI serial NOR flash\r\n ");
-	    }
-	    else
-	    {
-	        PRINTF("\r\n Erase sector failure !\r\n");
-	        error_trap();
-	    }
+	/* Initializes the FLEXSPI module for the other FLEXSPI APIs */
+	status = ROM_FLEXSPI_NorFlash_Init(FlexSpiInstance, &norConfig);
+	if (status == kStatus_Success)
+	{
+		PRINTF("\r\n Successfully init FLEXSPI serial NOR flash\r\n ");
+	}
+	else
+	{
+		PRINTF("\r\n Erase sector failure !\r\n");
+		error_trap();
+	}
 
-	    /* Perform software reset after initializing flexspi module */
-	    ROM_FLEXSPI_NorFlash_ClearCache(FlexSpiInstance);
+	/* Perform software reset after initializing flexspi module */
+	ROM_FLEXSPI_NorFlash_ClearCache(FlexSpiInstance);
 
 
-	    serialNorTotalSize  = norConfig.memConfig.sflashA1Size;
-	    serialNorSectorSize = norConfig.sectorSize;
-	    serialNorPageSize   = norConfig.pageSize;
+	serialNorTotalSize  = norConfig.memConfig.sflashA1Size;
+	serialNorSectorSize = norConfig.sectorSize;
+	serialNorPageSize   = norConfig.pageSize;
 
-	    /* Print HyperFlash information */
-	    PRINTF("\r\n HyperFlash Information: ");
-	    PRINTF("\r\n Total program flash size:\t%d KB, Hex: (0x%x)", (serialNorTotalSize / 1024U), serialNorTotalSize);
-	    PRINTF("\r\n Program flash sector size:\t%d KB, Hex: (0x%x) ", (serialNorSectorSize / 1024U), serialNorSectorSize);
-	    PRINTF("\r\n Program flash page size:\t%d B, Hex: (0x%x)\r\n", serialNorPageSize, serialNorPageSize);
+	/* Print HyperFlash information */
+	PRINTF("\r\n HyperFlash Information: ");
+	PRINTF("\r\n Total program flash size:\t%d KB, Hex: (0x%x)", (serialNorTotalSize / 1024U), serialNorTotalSize);
+	PRINTF("\r\n Program flash sector size:\t%d KB, Hex: (0x%x) ", (serialNorSectorSize / 1024U), serialNorSectorSize);
+	PRINTF("\r\n Program flash page size:\t%d B, Hex: (0x%x)\r\n", serialNorPageSize, serialNorPageSize);
 
 	/*
 	 * SECTOR_INDEX_FROM_END = 1 means the last sector,
@@ -726,375 +734,540 @@ void flexspi_nor_handle_cache(bool isPre, flexspi_cache_status_t cacheStatus)
 	#ifndef SECTOR_INDEX_FROM_END
 	#define SECTOR_INDEX_FROM_END 1U
 	#endif
-	    /* Erase one sector. */
-	    PRINTF("\r\n Erasing serial NOR flash over FLEXSPI");
-	    for(hyper_sec_no = 1, hyperflash_addr = 0x80000; hyper_sec_no < 255, hyperflash_addr < 0x4000000; hyper_sec_no++, hyperflash_addr+= 0x40000)
-	    {
-	    	 /* Erase a sector from target device dest address */
-			serialNorAddress        = hyperflash_addr;
-			FlexSPISerialNorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + serialNorAddress;
-
-		    flexspi_nor_handle_cache(true, cacheStatus);
-		    status = ROM_FLEXSPI_NorFlash_Erase(FlexSpiInstance, &norConfig, serialNorAddress, serialNorSectorSize);
-		    flexspi_nor_handle_cache(false, cacheStatus);
-		    if (status == kStatus_Success)
-		    {
-		        /* Print message for user. */
-		        //PRINTF("\r\n Successfully erased one sector of NOR flash device 0x%x -> 0x%x\r\n", serialNorAddress,
-		               //(serialNorAddress + serialNorSectorSize));
-		    	PRINTF("\r\n sec no %d\r\n",hyper_sec_no);
-		    }
-		    else
-		    {
-		        PRINTF("\r\n Erase sector failure!\r\n");
-		        error_trap();
-		    }
-		    funcDelayUs(5);
-	    }
-	}
-
-	void ReadFromPendrive(void)
+	/* Erase one sector. */
+	PRINTF("\r\n Erasing serial NOR flash over FLEXSPI");
+	for(hyper_sec_no = 1, hyperflash_addr = APP_WRITE_START_ADDR; hyper_sec_no < 255, hyperflash_addr < FLASH_SIZE; hyper_sec_no++, hyperflash_addr+= FLASH_SECTOR_SIZE)
 	{
-	    status_t status;
-	    uint32_t i = 0U;
-//	    uint32_t serialNorAddress;        /* Address of the serial nor device location */
-//	    uint64_t FlexSPISerialNorAddress; /* Address of the serial nor device in FLEXSPI memory */
-	    uint32_t serialNorTotalSize;
-	    uint32_t serialNorSectorSize;
-	    uint32_t serialNorPageSize;
+		 /* Erase a sector from target device dest address */
+		serialNorAddress        = hyperflash_addr;
+		FlexSPISerialNorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + serialNorAddress;
 
-	    flexspi_cache_status_t cacheStatus;
-
-		FATFS pendrive_fatfs;      /* Work area (filesystem object) for logical drives */
-		DIR pendrive_dir;
-
-		uint8_t *pendrive_filename;
-
-	    /* Register work area for logical drive 1*/
-	    error = f_mount(&pendrive_fatfs, "1:", 0);
-
-	    /*
-	     Create file on the pendrive
-	    error = f_mkdir(_T("1:/EM"));
-
-		if (error == FR_EXIST)
+		flexspi_nor_handle_cache(true, cacheStatus);
+		status = ROM_FLEXSPI_NorFlash_Erase(FlexSpiInstance, &norConfig, serialNorAddress, serialNorSectorSize);
+		flexspi_nor_handle_cache(false, cacheStatus);
+		if (status == kStatus_Success)
 		{
-			error = f_opendir(&pendrive_dir,_T("1:/EM"));
+			/* Print message for user. */
+			//PRINTF("\r\n Successfully erased one sector of NOR flash device 0x%x -> 0x%x\r\n", serialNorAddress,
+				   //(serialNorAddress + serialNorSectorSize));
+			PRINTF("\r\n sec no %d\r\n",hyper_sec_no);
 		}
 		else
 		{
-
+			PRINTF("\r\n Erase sector failure!\r\n");
+			error_trap();
 		}
-	    pendrive_filename = pendrive_filename_creation("DataLogging");
-	    error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
-	    */
-//	    error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
-//	    error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
-//		error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
-//		error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
-		error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
+		funcDelayUs(5);
+	}
+}
 
-	    if(error == FR_OK)
-	    {
-		    kg = 0;
-	    	NorAddress = 0x80000;
-			FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
-			while(f_gets((char *)lineBuffer, sizeof(lineBuffer), &g_fileObject1))
+void ReadFromPendrive(void)
+{
+	status_t status;
+	uint32_t i = 0U;
+	uint32_t serialNorTotalSize;
+	uint32_t serialNorSectorSize;
+	uint32_t serialNorPageSize;
+
+	uint8_t ix = 0,fg = 0;
+
+	flexspi_cache_status_t cacheStatus;
+
+	FATFS pendrive_fatfs;      /* Work area (filesystem object) for logical drives */
+	DIR pendrive_dir;
+
+	uint8_t *pendrive_filename;
+
+	/* Register work area for logical drive 1*/
+	error = f_mount(&pendrive_fatfs, "1:", 0);
+
+	/*
+	 Create file on the pendrive
+	error = f_mkdir(_T("1:/EM"));
+
+	if (error == FR_EXIST)
+	{
+		error = f_opendir(&pendrive_dir,_T("1:/EM"));
+	}
+	else
+	{
+
+	}
+	pendrive_filename = pendrive_filename_creation("DataLogging");
+	error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
+	*/
+//	error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
+	error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSEP.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
+
+	if(error == FR_OK)
+	{
+		kg = 0;
+		NorAddress = APP_WRITE_START_ADDR;
+		FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+		while(f_gets((char *)lineBuffer, sizeof(lineBuffer), &g_fileObject1))
+		{
+			if(lineBuffer[0] == ':')
 			{
-				if(lineBuffer[0] == ':')
+				no_bytes = AsciiToDecimal(1,2);
+				address  = AsciiToDecimal(3,4);
+				record_type = AsciiToDecimal(7,2);
+
+				if(record_type == DATA_RECORD || record_type == E_O_F)
 				{
-					no_bytes = AsciiToDecimal(1,2);
-					address  = AsciiToDecimal(3,4);
-					record_type = AsciiToDecimal(7,2);
-
-					if(record_type == 0x00 || record_type == 0x01)
+					/*Data record*/
+					gh = 9;
+					for(ij = 0; ij < no_bytes;ij++,gh+=2,kg++)
 					{
-						/*Data record*//*End of file record*/
-						gh = 9;
-						for(ij = 0; ij < no_bytes;ij++,gh+=2,kg++)
-						{
-							temp_buffer[ij] = AsciiToDecimal(gh,2);
-							programable_buffer[kg] = temp_buffer[ij];
-							funcDelayUs(5);
-						}
+						temp_buffer[ij] = AsciiToDecimal(gh,2);
+						programable_buffer[kg] = temp_buffer[ij];
+						funcDelayUs(1);
+					}
 
-						if(kg >= 512 || record_type == 0x01)
+					if(kg >= PRGM_PAGE_SIZE || record_type == E_O_F)
+					{
+						if(record_type == E_O_F)
 						{
-							if(record_type == 0x01)
+							/*End of file record*/
+							PRINTF("\r\n Program a buffer to a page of NOR flash");
+							/* Prepare user buffer. */
+							for (i = 0; i < kg; i++)
 							{
+								s_buffer[i] = programable_buffer[i];
+							}
 
-								PRINTF("\r\n Program a buffer to a page of NOR flash");
-								/* Prepare user buffer. */
-								for (i = 0; i < kg; i++)
-								{
-									s_buffer[i] = programable_buffer[i];
-								}
+							norConfig.pageSize = kg;
+							/* Program user buffer into FLEXSPI NOR flash */
+							status =
+								ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+							if (status != kStatus_Success)
+							{
+								PRINTF("\r\n Page program failure!\r\n");
+								error_trap();
+							}
 
-								norConfig.pageSize = kg;
-								/* Program user buffer into FLEXSPI NOR flash */
-								status =
-									ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
-								if (status != kStatus_Success)
-								{
-									PRINTF("\r\n Page program failure!\r\n");
-									error_trap();
-								}
+							funcDelayUs(1);
 
-								funcDelayUs(5);
-								DCACHE_InvalidateByRange(FlexSPINorAddress, kg);
-								/* Verify programming by reading back from FLEXSPI memory directly */
-								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), kg);
-								if (memcmp(s_buffer_rbc, s_buffer, kg) == 0)
-								{
-									PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
-										   (FlexSPINorAddress), (FlexSPINorAddress + kg));
-								}
-								else
-								{
-									PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
-									error_trap();
-								}
-
-//								NorAddress        = 512 + NorAddress;
-//								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+							DCACHE_InvalidateByRange(FlexSPINorAddress, kg);
+							/* Verify programming by reading back from FLEXSPI memory directly */
+							memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), kg);
+							if (memcmp(s_buffer_rbc, s_buffer, kg) == 0)
+							{
+								PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+									   (FlexSPINorAddress), (FlexSPINorAddress + kg));
 							}
 							else
 							{
-								kg = 0;
+								PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+								error_trap();
+							}
+						}
+						else
+						{
+							kg = 0;
 
-								PRINTF("\r\n Program a buffer to a page of NOR flash");
-								/* Prepare user buffer. */
-								for (i = 0; i < BUFFER_LEN; i++)
-								{
-									s_buffer[i] = programable_buffer[i];
-								}
-
-								/* Program user buffer into FLEXSPI NOR flash */
-								status =
-									ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
-								if (status != kStatus_Success)
-								{
-									PRINTF("\r\n Page program failure!\r\n");
-									error_trap();
-								}
-
-								funcDelayUs(5);
-								DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
-								/* Verify programming by reading back from FLEXSPI memory directly */
-								memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
-								if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
-								{
-									PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
-										   (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
-								}
-								else
-								{
-									PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
-									error_trap();
-								}
-
-								NorAddress        = 512 + NorAddress;
-								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+							PRINTF("\r\n Program a buffer to a page of NOR flash");
+							/* Prepare user buffer. */
+							for (i = 0; i < BUFFER_LEN; i++)
+							{
+								s_buffer[i] = programable_buffer[i];
 							}
 
-							memset(&programable_buffer,0,sizeof(programable_buffer));
-							memset(&temp_buffer,0,sizeof(temp_buffer));
-							memset(&s_buffer,0,sizeof(s_buffer));
-							memset(&s_buffer_rbc,0,sizeof(s_buffer_rbc));
-							funcDelayUs(5);
+							/* Program user buffer into FLEXSPI NOR flash */
+							status =
+								ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+							if (status != kStatus_Success)
+							{
+								PRINTF("\r\n Page program failure!\r\n");
+								error_trap();
+							}
+
+							funcDelayUs(1);
+							DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
+							/* Verify programming by reading back from FLEXSPI memory directly */
+							memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
+							if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
+							{
+								PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+									   (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
+							}
+							else
+							{
+								PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+								error_trap();
+							}
+
+							NorAddress        = PRGM_PAGE_SIZE + NorAddress;
+							FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
 						}
+
+						memset(&programable_buffer,0,sizeof(programable_buffer));
+						memset(&temp_buffer,0,sizeof(temp_buffer));
+						memset(&s_buffer,0,sizeof(s_buffer));
+						memset(&s_buffer_rbc,0,sizeof(s_buffer_rbc));
+						funcDelayUs(1);
+					}
+				}
+				else if(record_type == EXTENDED_LINEAR_ADDR)
+				{
+					/*Extended linear address record*/
+					ix = 9;
+					for(fg = 0; fg < no_bytes;ix+=2/*1byte*/,fg++)
+					{
+						extnd_addr_arr[fg] = AsciiToDecimal(ix,2);
+					}
+					/*
+					extended_address = extnd_addr_arr[0];
+					extended_address = (extended_address << 8) | extnd_addr_arr[1];
+					*/
+					extended_address = extnd_addr_arr[0];
+					extended_address = extended_address << 8;
+					extended_address = extended_address | extnd_addr_arr[1];
+					memset(&extnd_addr_arr,0,sizeof(extnd_addr_arr));
+				}
+				else if(record_type == APP_ENTRY_ADDR)
+				{
+					/*Jump address mentioned in the address field*/
+					ix = 9;
+					for(fg = 0; fg < no_bytes;ix+=2/*1byte*/,fg++)
+					{
+						jump_addr_arr[fg] = AsciiToDecimal(ix,2);
 					}
 
-					}
-					else if(record_type == 0x04)
-					{
-						/*Extended linear address record*/
-					}
-					else if(record_type == 0x05)
-					{
-						/*Jump address mentioned in the address field*/
-					}
+					jump_address = jump_addr_arr[0];
+					jump_address = jump_address << 8;
+					jump_address = jump_address | jump_addr_arr[1];
+					jump_address = jump_address << 8;
+					jump_address = jump_address | jump_addr_arr[2];
+					jump_address = jump_address << 8;
+					jump_address = jump_address | jump_addr_arr[3];
+					memset(&jump_addr_arr,0,sizeof(jump_addr_arr));
+				}
 
 				f_sync(&g_fileObject1);
 				memset(&lineBuffer,0,sizeof(lineBuffer));
 			}
-	    }
-		f_close(&g_fileObject1);
-		//f_closedir(&pendrive_dir);
-
-		/* Unregister work area prior to discard it */
-		f_mount(0, "1:", 0);
-
-		// Perform the jump to the desired location in HyperFlash memory
-		jump_to_hyperflash_location();
-	}
-
-	// Define the address to jump to in HyperFlash memory
-	//#define JUMP_ADDRESS 0x6000DFB4 // Example address, replace with your desired address
-
-	#define JUMP_ADDRESS  0x60080305//0x6008255C//0x60082305//0x60002304 // Example address, replace with your desired address
-
-	uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits)
-	{
-//		uint32_t Decimal_data = 0;
-		switch(no_of_digits)
-		{
-			case 1: Decimal_data  = ASCII2HEX(lineBuffer[starting_index]);
-					break;
-			case 2:
-					data_temp =  ASCII2HEX(lineBuffer[starting_index]);
-					if(data_temp > 9)
-					{
-						Decimal_data = data_temp * 16;
-					}
-					else
-					{
-						Decimal_data = data_temp * 10;
-						Decimal_data = decimalToBCD(Decimal_data);
-					}
-					Decimal_data += ASCII2HEX(lineBuffer[starting_index+1]);
-					break;
-			case 3:
-					break;
-			case 4:
-					data_temp =  ASCII2HEX(lineBuffer[starting_index]);
-					if(data_temp > 9)
-					{
-						DecimalMSB = data_temp * 16;
-					}
-					else
-					{
-						DecimalMSB = data_temp * 10;
-
-						DecimalMSB = decimalToBCD(DecimalMSB);
-					}
-					DecimalMSB += ASCII2HEX(lineBuffer[starting_index+1]);
-
-					data_temp =  ASCII2HEX(lineBuffer[starting_index+2]);
-					if(data_temp > 9)
-					{
-						DecimalLSB = data_temp * 16;
-					}
-					else
-					{
-						DecimalLSB = data_temp * 10;
-
-						DecimalLSB = decimalToBCD(DecimalLSB);
-					}
-					DecimalLSB += ASCII2HEX(lineBuffer[starting_index+3]);
-
-					Decimal_data = (DecimalMSB << 8) | DecimalLSB;
-					break;
-			default:break;
 		}
-//		Decimal_data  = decimalToBCD(Decimal_data);
-		return (Decimal_data);
 	}
 
-	uint8_t decimalToBCD(uint8_t decimal)
+#if 0
+	if(error == FR_OK)
 	{
-	    uint8_t tens = decimal / 10;
-	    uint8_t ones = decimal % 10;
-	    uint8_t bcd = (tens << 4) | ones;
-	    return bcd;
-	}
+		kg = 0;
+		NorAddress = 0x80000;
+		FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+		while(f_gets((char *)lineBuffer, sizeof(lineBuffer), &g_fileObject1))
+		{
+			if(lineBuffer[0] == ':')
+			{
+				no_bytes = AsciiToDecimal(1,2);
+				address  = AsciiToDecimal(3,4);
+				record_type = AsciiToDecimal(7,2);
 
-	uint8_t ASCII2HEX(uint8_t character)
+				if(record_type == 0x00 || record_type == 0x01)
+				{
+					/*Data record*//*End of file record*/
+					gh = 9;
+					for(ij = 0; ij < no_bytes;ij++,gh+=2,kg++)
+					{
+						temp_buffer[ij] = AsciiToDecimal(gh,2);
+						programable_buffer[kg] = temp_buffer[ij];
+						funcDelayUs(5);
+					}
+
+					if(kg >= 512 || record_type == 0x01)
+					{
+						if(record_type == 0x01)
+						{
+
+							PRINTF("\r\n Program a buffer to a page of NOR flash");
+							/* Prepare user buffer. */
+							for (i = 0; i < kg; i++)
+							{
+								s_buffer[i] = programable_buffer[i];
+							}
+
+							norConfig.pageSize = kg;
+							/* Program user buffer into FLEXSPI NOR flash */
+							status =
+								ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+							if (status != kStatus_Success)
+							{
+								PRINTF("\r\n Page program failure!\r\n");
+								error_trap();
+							}
+
+							funcDelayUs(5);
+							DCACHE_InvalidateByRange(FlexSPINorAddress, kg);
+							/* Verify programming by reading back from FLEXSPI memory directly */
+							memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), kg);
+							if (memcmp(s_buffer_rbc, s_buffer, kg) == 0)
+							{
+								PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+									   (FlexSPINorAddress), (FlexSPINorAddress + kg));
+							}
+							else
+							{
+								PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+								error_trap();
+							}
+
+//								NorAddress        = 512 + NorAddress;
+//								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+						}
+						else
+						{
+							kg = 0;
+
+							PRINTF("\r\n Program a buffer to a page of NOR flash");
+							/* Prepare user buffer. */
+							for (i = 0; i < BUFFER_LEN; i++)
+							{
+								s_buffer[i] = programable_buffer[i];
+							}
+
+							/* Program user buffer into FLEXSPI NOR flash */
+							status =
+								ROM_FLEXSPI_NorFlash_ProgramPage(FlexSpiInstance, &norConfig, NorAddress, (const uint32_t *)s_buffer);
+							if (status != kStatus_Success)
+							{
+								PRINTF("\r\n Page program failure!\r\n");
+								error_trap();
+							}
+
+							funcDelayUs(5);
+							DCACHE_InvalidateByRange(FlexSPINorAddress, sizeof(s_buffer_rbc));
+							/* Verify programming by reading back from FLEXSPI memory directly */
+							memcpy(s_buffer_rbc, (void *)(FlexSPINorAddress), sizeof(s_buffer_rbc));
+							if (memcmp(s_buffer_rbc, s_buffer, sizeof(s_buffer)) == 0)
+							{
+								PRINTF("\r\n Successfully programmed and verified location FLEXSPI memory 0x%x -> 0x%x \r\n",
+									   (FlexSPINorAddress), (FlexSPINorAddress + sizeof(s_buffer)));
+							}
+							else
+							{
+								PRINTF("\r\n Program data -  read out data value incorrect!\r\n ");
+								error_trap();
+							}
+
+							NorAddress        = 512 + NorAddress;
+							FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
+						}
+
+						memset(&programable_buffer,0,sizeof(programable_buffer));
+						memset(&temp_buffer,0,sizeof(temp_buffer));
+						memset(&s_buffer,0,sizeof(s_buffer));
+						memset(&s_buffer_rbc,0,sizeof(s_buffer_rbc));
+						funcDelayUs(5);
+					}
+				}
+
+				}
+				else if(record_type == 0x04)
+				{
+					/*Extended linear address record*/
+				}
+				else if(record_type == 0x05)
+				{
+					/*Jump address mentioned in the address field*/
+				}
+
+			f_sync(&g_fileObject1);
+			memset(&lineBuffer,0,sizeof(lineBuffer));
+		}
+	}
+#endif
+	f_close(&g_fileObject1);
+	//f_closedir(&pendrive_dir);
+
+	/* Unregister work area prior to discard it */
+	f_mount(0, "1:", 0);
+
+	// Perform the jump to the desired location in HyperFlash memory
+	jump_to_hyperflash_location(jump_address);
+}
+
+uint32_t AsciiToDecimal(uint16_t starting_index,uint8_t no_of_digits)
+{
+	uint32_t Decimal_data = 0,DecimalMSB = 0,DecimalLSB = 0;
+	switch(no_of_digits)
 	{
-		uint8_t mem_sel_data = 0;
+		case 1: Decimal_data  = ASCII2HEX(lineBuffer[starting_index]);
+				break;
+		case 2:
+				data_temp =  ASCII2HEX(lineBuffer[starting_index]);
+				if(data_temp > 9)
+				{
+					Decimal_data = data_temp * 16;
+				}
+				else
+				{
+					Decimal_data = data_temp * 10;
+					Decimal_data = decimalToBCD(Decimal_data);
+				}
+				Decimal_data += ASCII2HEX(lineBuffer[starting_index+1]);
+				break;
+		case 3:
+				break;
+		case 4:
+				data_temp =  ASCII2HEX(lineBuffer[starting_index]);
+				if(data_temp > 9)
+				{
+					DecimalMSB = data_temp * 16;
+				}
+				else
+				{
+					DecimalMSB = data_temp * 10;
 
-	    if(character >= 'A')
-	    {
-	        mem_sel_data = character - 55;
-	    }
-	    else
-	    {
-	        mem_sel_data = character- 48;
-	    }
+					DecimalMSB = decimalToBCD(DecimalMSB);
+				}
+				DecimalMSB += ASCII2HEX(lineBuffer[starting_index+1]);
 
-	    return mem_sel_data;
+				data_temp =  ASCII2HEX(lineBuffer[starting_index+2]);
+				if(data_temp > 9)
+				{
+					DecimalLSB = data_temp * 16;
+				}
+				else
+				{
+					DecimalLSB = data_temp * 10;
+
+					DecimalLSB = decimalToBCD(DecimalLSB);
+				}
+				DecimalLSB += ASCII2HEX(lineBuffer[starting_index+3]);
+
+				Decimal_data = (DecimalMSB << 8) | DecimalLSB;
+				break;
+		default:break;
 	}
-	static OSA_SR_ALLOC();
+	return (Decimal_data);
+}
+
+uint8_t decimalToBCD(uint8_t decimal)
+{
+	uint8_t tens = decimal / 10;
+	uint8_t ones = decimal % 10;
+	uint8_t bcd = (tens << 4) | ones;
+	return bcd;
+}
+
+uint8_t ASCII2HEX(uint8_t character)
+{
+	uint8_t mem_sel_data = 0;
+
+	if(character >= 'A')
+	{
+		mem_sel_data = character - 55;
+	}
+	else
+	{
+		mem_sel_data = character- 48;
+	}
+
+	return mem_sel_data;
+}
+static OSA_SR_ALLOC();
 	// Function to perform the jump
-	void jump_to_hyperflash_location() {
+void jump_to_hyperflash_location(uint32_t applicationAddress)
+{
+	// Turn off global interrupt
+	OSA_ENTER_CRITICAL();
 
-		/*
-		 uint32_t applicationAddress, stackPointer;
-		 get_user_application_entry(&applicationAddress, &stackPointer);
-	    // Create the function call to the user application.
-	    // Static variables are needed since changed the stack pointer out from under the compiler
-	    // we need to ensure the values we are using are not stored on the previous stack
-	    static uint32_t s_stackPointer = 0;
-	    s_stackPointer = stackPointer;
-	    static void (*farewellBootloader)(void) = 0;
-	//    farewellBootloader = (void (*)(void))applicationAddress;
-	    farewellBootloader = 0x60082305;
-
-	    // Set the VTOR to the application vector table address.
-	//    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
-	    SCB->VTOR = 0;
-
-	    // Set stack pointers to the application stack pointer.
-	    __set_MSP(s_stackPointer);
-	    __set_PSP(s_stackPointer);
-
-	    // Jump to the application.
-	    farewellBootloader();
-	    */
-
-
-		// Turn off global interrupt
-		OSA_ENTER_CRITICAL();
-
-		// Shutdown microseconds driver.
+	// Shutdown microseconds driver.
 //	    PIT->CHANNEL[1].TCTRL = 0; // stop timer 1
 //	    PIT->CHANNEL[0].TCTRL = 0; // stop timer 1
 //	    PIT->CHANNEL[1].LDVAL = 0;
 //	    PIT->CHANNEL[0].LDVAL = 0;
 //	    PIT->MCR |= PIT_MCR_MDIS_MASK;
 
-	    // Clear any IRQs that may be enabled, we only want the IRQs we enable to be active
-	    //NVIC_ClearEnabledIRQs();
-	    NVIC->ICER[0] = 0xFFFFFFFF;
-	    NVIC->ICER[1] = 0xFFFFFFFF;
-	    NVIC->ICER[2] = 0xFFFFFFFF;
-	    NVIC->ICER[3] = 0xFFFFFFFF;
-	    NVIC->ICER[4] = 0xFFFFFFFF;
-	    NVIC->ICER[5] = 0xFFFFFFFF;
-	    NVIC->ICER[6] = 0xFFFFFFFF;
-	    NVIC->ICER[7] = 0xFFFFFFFF;
+	// Clear any IRQs that may be enabled, we only want the IRQs we enable to be active
+	//NVIC_ClearEnabledIRQs();
+	NVIC->ICER[0] = 0xFFFFFFFF;
+	NVIC->ICER[1] = 0xFFFFFFFF;
+	NVIC->ICER[2] = 0xFFFFFFFF;
+	NVIC->ICER[3] = 0xFFFFFFFF;
+	NVIC->ICER[4] = 0xFFFFFFFF;
+	NVIC->ICER[5] = 0xFFFFFFFF;
+	NVIC->ICER[6] = 0xFFFFFFFF;
+	NVIC->ICER[7] = 0xFFFFFFFF;
 
-	    // Clear any pending IRQs that may have been set
-	    //NVIC_ClearAllPendingIRQs();
-	    NVIC->ICPR[0] = 0xFFFFFFFF;
-	    NVIC->ICPR[1] = 0xFFFFFFFF;
-	    NVIC->ICPR[2] = 0xFFFFFFFF;
-	    NVIC->ICPR[3] = 0xFFFFFFFF;
-	    NVIC->ICPR[4] = 0xFFFFFFFF;
-	    NVIC->ICPR[5] = 0xFFFFFFFF;
-	    NVIC->ICPR[6] = 0xFFFFFFFF;
-	    NVIC->ICPR[7] = 0xFFFFFFFF;
+	// Clear any pending IRQs that may have been set
+	//NVIC_ClearAllPendingIRQs();
+	NVIC->ICPR[0] = 0xFFFFFFFF;
+	NVIC->ICPR[1] = 0xFFFFFFFF;
+	NVIC->ICPR[2] = 0xFFFFFFFF;
+	NVIC->ICPR[3] = 0xFFFFFFFF;
+	NVIC->ICPR[4] = 0xFFFFFFFF;
+	NVIC->ICPR[5] = 0xFFFFFFFF;
+	NVIC->ICPR[6] = 0xFFFFFFFF;
+	NVIC->ICPR[7] = 0xFFFFFFFF;
+#if 1
+	 uint32_t stackPointer = 0x60080000;
+//	 uint32_t stackPointer;
+//	 get_user_application_entry(&applicationAddress, &stackPointer);
+	// Create the function call to the user application.
+	// Static variables are needed since changed the stack pointer out from under the compiler
+	// we need to ensure the values we are using are not stored on the previous stack
+	static uint32_t s_stackPointer = 0;
+	s_stackPointer = stackPointer;
+	static void (*farewellBootloader)(void) = 0;
+    farewellBootloader = (void (*)(void))applicationAddress;
 
-	    // Set the VTOR to default.
-		SCB->VTOR = 0;//kDefaultVectorTableAddress;
+	// Set the VTOR to the application vector table address.
+//    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
+	SCB->VTOR = (uint32_t)0x60080000;
 
-		 CLOCK_DisableClock(kCLOCK_UsbOh3);
+	// Set stack pointers to the application stack pointer.
+	__set_MSP(s_stackPointer);
+	__set_PSP(s_stackPointer);
 
-		 // Restore global interrupt.
-		 __enable_irq();
+	// Jump to the application.
+	farewellBootloader();
+#endif
 
-		// Memory barriers for good measure.
-		__ISB();
-		__DSB();
+#if 0
+	// Set the VTOR to default.
+//	SCB->VTOR = 0;//kDefaultVectorTableAddress;
+	SCB->VTOR = 0x60080000;//kDefaultVectorTableAddress;
+	extern uint32_t g_pfnVectors[];  // Vector table defined in startup code
+//    unsigned int * pSCB_VTOR = (unsigned int *) 0xE000ED08;
+    unsigned int * pSCB_VTOR = (unsigned int *) 0x60080000;
+    if ((unsigned int *)g_pfnVectors!=(unsigned int *) 0x00000000) {
+	*pSCB_VTOR = (unsigned int)g_pfnVectors;
+    }
 
-	    static void (*farewellBootloader)(void) = 0;
-	    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
-	    //Jump to the application.
-	    farewellBootloader();
+	 CLOCK_DisableClock(kCLOCK_UsbOh3);
 
+	 // Restore global interrupt.
+	 __enable_irq();
+
+	// Memory barriers for good measure.
+	__ISB();
+	__DSB();
+
+	static void (*farewellBootloader)(void) = 0;
+	farewellBootloader = (void (*)(void))JUMP_ADDRESS;//applicationAddress
+
+	//Jump to the application.
+	farewellBootloader();
+#endif
+
+	#if 0
+			//__asm("ldr pc, =0x60082305");
+			__asm("ldr r0, =0x60082305"); // Load the address into register r0
+			__asm("bx r0");               // Branch to the address stored in r0
+
+			while(1)
+			{
+
+			}
+	#endif
 
 	#if 0
 	//! @brief Defines a constant for the default vector table.
@@ -1107,48 +1280,37 @@ void flexspi_nor_handle_cache(bool isPre, flexspi_cache_status_t cacheStatus)
 
 	//    shutdown_cleanup(kShutdownType_Shutdown);
 
-	    // Create the function call to the user application.
-	    // Static variables are needed since changed the stack pointer out from under the compiler
-	    // we need to ensure the values we are using are not stored on the previous stack
-	    static uint32_t s_stackPointer = 0;
-	    s_stackPointer = 0;
-	    static void (*farewellBootloader)(void) = 0;
+		// Create the function call to the user application.
+		// Static variables are needed since changed the stack pointer out from under the compiler
+		// we need to ensure the values we are using are not stored on the previous stack
+		static uint32_t s_stackPointer = 0;
+		s_stackPointer = 0;
+		static void (*farewellBootloader)(void) = 0;
 	//    farewellBootloader = (void (*)(void))applicationAddress;
-	    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
-	    // Set the VTOR to the application vector table address.
-	    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
+		farewellBootloader = (void (*)(void))JUMP_ADDRESS;
+		// Set the VTOR to the application vector table address.
+		SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;//0xa000
 
-	    // Set stack pointers to the application stack pointer.
-	    __set_MSP(s_stackPointer);
-	    __set_PSP(s_stackPointer);
+		// Set stack pointers to the application stack pointer.
+		__set_MSP(s_stackPointer);
+		__set_PSP(s_stackPointer);
 
-	    // Jump to the application.
-	    farewellBootloader();
+		// Jump to the application.
+		farewellBootloader();
 	#endif
-	/*
-	    //__asm("ldr pc, =0x60082305");
-	    __asm("ldr r0, =0x60082305"); // Load the address into register r0
-	    __asm("bx r0");               // Branch to the address stored in r0
+}
 
-	    while(1)
-		{
+void funcDelayUs(uint32_t llTick)
+{
+	uint32_t liDelayLoop = 0;
+	uint32_t llLoopUs1 = 0;
 
-		}
-	*/
-	}
-
-	void funcDelayUs(Uint32 llTick)
+	for(liDelayLoop = 0; liDelayLoop < llTick; liDelayLoop++)
 	{
-
-	    Uint32 liDelayLoop = 0;
-	    Uint32 llLoopUs1 = 0;
-
-	    for(liDelayLoop = 0; liDelayLoop < llTick; liDelayLoop++)
-	    {
-	        for(llLoopUs1 = 0; llLoopUs1 < 100; llLoopUs1++)
-	        {}
-	    }
+		for(llLoopUs1 = 0; llLoopUs1 < 100; llLoopUs1++)
+		{}
 	}
+}
 /******************************HyperFlash End*********************************/
 int main(void)
 {
@@ -1161,6 +1323,7 @@ int main(void)
     BOARD_SetupFlexSpiClock();
 #endif
     BOARD_InitDebugConsole();
+    //SysTick_Config(SystemCoreClock); //1ms systick
 #if 0
     status_t status;
     uint32_t i = 0U;

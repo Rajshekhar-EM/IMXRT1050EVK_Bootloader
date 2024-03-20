@@ -1,0 +1,2 @@
+../startup/startup.c:42:6:init_data_bss	0	static
+../startup/startup.c:179:6:init_interrupts	0	static

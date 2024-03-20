@@ -1,0 +1,10 @@
+../source/drivers/sdmmc/fsl_sdmmc_host.c:106:17:SDMMCHOST_TransferFunction	32	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:153:6:SDMMCHOST_BL_IsCardPresent	0	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:218:6:SDMMCHOST_Delay	0	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:225:10:SDMMCHOST_WaitCardDetectStatus	32	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:253:6:SDMMCHOST_IsCardPresent	0	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:259:6:SDMMCHOST_PowerOffCard	8	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:275:6:SDMMCHOST_PowerOnCard	8	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:292:10:SDMMCHOST_Init	8	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:321:6:SDMMCHOST_Reset	8	static
+../source/drivers/sdmmc/fsl_sdmmc_host.c:337:6:SDMMCHOST_Deinit	8	static

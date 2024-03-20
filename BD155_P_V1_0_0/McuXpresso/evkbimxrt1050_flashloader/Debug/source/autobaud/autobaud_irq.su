@@ -1,0 +1,4 @@
+../source/autobaud/autobaud_irq.c:199:6:instance_transition_callback	32	static
+../source/autobaud/autobaud_irq.c:68:6:autobaud_init	8	static
+../source/autobaud/autobaud_irq.c:79:6:autobaud_deinit	0	static
+../source/autobaud/autobaud_irq.c:168:10:autobaud_get_rate	24	static

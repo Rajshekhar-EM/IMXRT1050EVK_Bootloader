@@ -1,0 +1,6 @@
+../source/property/src/property_imx.c:368:10:bootloader_property_set_uint32	0	static
+../source/property/src/property_imx.c:116:17:target_load_bootloader_config_area	0	static
+../source/property/src/property_imx.c:122:10:bootloader_property_load_user_config	16	static
+../source/property/src/property_imx.c:150:10:bootloader_property_init	16	static
+../source/property/src/property_imx.c:398:10:bootloader_get_external_memory_properties	64	static
+../source/property/src/property_imx.c:237:10:bootloader_property_get	24	static

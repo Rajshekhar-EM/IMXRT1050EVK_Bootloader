@@ -1,0 +1,4 @@
+../source/memory/src/normal_memory.c:63:17:normal_mem_init	0	static
+../source/memory/src/normal_memory.c:68:10:normal_mem_read	8	static
+../source/memory/src/normal_memory.c:74:10:normal_mem_write	8	static
+../source/memory/src/normal_memory.c:95:10:normal_mem_fill	4	static

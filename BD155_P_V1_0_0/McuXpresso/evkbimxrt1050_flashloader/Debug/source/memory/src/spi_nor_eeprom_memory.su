@@ -1,0 +1,10 @@
+../source/memory/src/spi_nor_eeprom_memory.c:219:10:spi_nor_eeprom_mem_init	0	static
+../source/memory/src/spi_nor_eeprom_memory.c:566:17:lpspi_data_transfer	72	static
+../source/memory/src/spi_nor_eeprom_memory.c:228:10:spi_nor_eeprom_mem_read	0	static
+../source/memory/src/spi_nor_eeprom_memory.c:403:13:is_spi_nor_memory_erased	1040	static
+../source/memory/src/spi_nor_eeprom_memory.c:317:10:spi_nor_eeprom_mem_flush	1048	static
+../source/memory/src/spi_nor_eeprom_memory.c:239:10:spi_nor_eeprom_mem_write	32	static
+../source/memory/src/spi_nor_eeprom_memory.c:356:10:spi_nor_eeprom_mem_erase	16	static
+../source/memory/src/spi_nor_eeprom_memory.c:428:10:spi_nor_eeprom_mem_config	80	static
+../source/memory/src/spi_nor_eeprom_memory.c:380:10:spi_nor_eeprom_mem_erase_all	16	static
+../source/memory/src/spi_nor_eeprom_memory.c:505:10:spi_nor_eeprom_get_property	0	static

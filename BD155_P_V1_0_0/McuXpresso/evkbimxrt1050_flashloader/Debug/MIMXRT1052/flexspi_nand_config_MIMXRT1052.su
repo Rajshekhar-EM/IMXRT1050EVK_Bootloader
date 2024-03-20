@@ -1,0 +1,2 @@
+../MIMXRT1052/flexspi_nand_config_MIMXRT1052.c:85:10:flexspi_nand_get_fcb_search_cfg	8	static
+../MIMXRT1052/flexspi_nand_config_MIMXRT1052.c:94:10:flexspi_nand_get_default_cfg_blk	48	static

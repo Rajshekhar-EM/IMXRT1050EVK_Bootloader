@@ -1,0 +1,7 @@
+../source/bootloader/src/bl_nor_encrypt_bee.c:200:6:bl_nor_encrypt_has_encrypted_region	16	static
+../source/bootloader/src/bl_nor_encrypt_bee.c:212:6:bl_nor_encrypt_region_info_valid	0	static
+../source/bootloader/src/bl_nor_encrypt_bee.c:283:10:bl_nor_encrypt_init	128	static
+../source/bootloader/src/bl_nor_encrypt_bee.c:461:6:bl_nor_in_encrypted_region	20	static
+../source/bootloader/src/bl_nor_encrypt_bee.c:491:10:bl_nor_encrypt_get_config_block	64	static
+../source/bootloader/src/bl_nor_encrypt_bee.c:544:10:bl_nor_encrypt_data	72	static
+../source/bootloader/src/bl_nor_encrypt_bee.c:607:6:bl_nor_encrypt_region_refresh	16	static

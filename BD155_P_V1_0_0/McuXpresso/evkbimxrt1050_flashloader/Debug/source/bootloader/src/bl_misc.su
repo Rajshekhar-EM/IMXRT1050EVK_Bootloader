@@ -1,0 +1,7 @@
+../source/bootloader/src/bl_misc.c:82:6:qspi_need_configure	0	static
+../source/bootloader/src/bl_misc.c:165:6:is_qspi_present	0	static
+../source/bootloader/src/bl_misc.c:175:6:is_otfad_present	0	static
+../source/bootloader/src/bl_misc.c:188:6:is_ltc_present	0	static
+../source/bootloader/src/bl_misc.c:205:6:is_flexspi_nor_present	0	static
+../source/bootloader/src/bl_misc.c:215:6:is_semc_nor_present	0	static
+../source/bootloader/src/bl_misc.c:282:6:is_in_execute_only_region	0	static

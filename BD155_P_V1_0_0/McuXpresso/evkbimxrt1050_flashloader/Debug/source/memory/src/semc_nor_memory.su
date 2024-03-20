@@ -1,0 +1,11 @@
+../source/memory/src/semc_nor_memory.c:352:10:semc_nor_mem_read	0	static
+../source/memory/src/semc_nor_memory.c:508:10:semc_nor_mem_flush	0	static
+../source/memory/src/semc_nor_memory.c:364:10:semc_nor_mem_write	24	static
+../source/memory/src/semc_nor_memory.c:591:10:semc_nor_get_property	0	static
+../source/memory/src/semc_nor_memory.c:645:6:semc_nor_adjust_memory_info_from_cfi	16	static
+../source/memory/src/semc_nor_memory.c:201:10:semc_nor_mem_init	16	static
+../source/memory/src/semc_nor_memory.c:239:10:semc_nor_mem_config	40	static
+../source/memory/src/semc_nor_memory.c:444:10:semc_nor_mem_fill	40	static
+../source/memory/src/semc_nor_memory.c:534:10:semc_nor_mem_erase	32	static
+../source/memory/src/semc_nor_memory.c:579:10:semc_nor_mem_erase_all	16	static
+../source/memory/src/semc_nor_memory.c:639:6:is_semc_nor_configured	0	static

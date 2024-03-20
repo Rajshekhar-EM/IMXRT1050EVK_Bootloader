@@ -1,0 +1,12 @@
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:103:6:usb_hid_poll_for_activity	0	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:448:6:usb_msc_pump	0	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:639:17:usb_hid_packet_finalize	0	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:644:17:usb_hid_packet_get_max_packet_size	0	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:629:13:usb_hid_packet_abort_data_phase	8	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:483:17:usb_hid_packet_read	24	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:471:17:usb_hid_packet_init	16	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:567:17:usb_hid_packet_write	24	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:343:6:usb_device_full_shutdown	8	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:236:10:usb_device_full_init	16	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:120:14:usb_device_callback	24	static
+../source/bootloader/src/usb_hid_msc_peripheral_interface.c:650:6:USB_OTG1_IRQHandler	0	static

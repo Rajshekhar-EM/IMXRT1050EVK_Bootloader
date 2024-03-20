@@ -1,0 +1,5 @@
+../source/usb/bm_composite/hid_bootloader.c:38:14:usb_device_hid_generic_callback	8	static
+../source/usb/bm_composite/hid_bootloader.c:112:14:usb_device_hid_generic_set_configure	16	static
+../source/usb/bm_composite/hid_bootloader.c:128:14:usb_device_hid_generic_set_interface	0	static
+../source/usb/bm_composite/hid_bootloader.c:141:14:usb_device_hid_generic_init	0	static
+../source/usb/bm_composite/hid_bootloader.c:147:14:usb_device_hid_generic_deinit	0	static

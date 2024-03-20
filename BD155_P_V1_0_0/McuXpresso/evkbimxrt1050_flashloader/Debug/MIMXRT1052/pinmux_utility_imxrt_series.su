@@ -1,0 +1,4 @@
+../MIMXRT1052/pinmux_utility_imxrt_series.c:48:6:uart_pinmux_config	0	static
+../MIMXRT1052/pinmux_utility_imxrt_series.c:70:6:GPIO1_Combined_0_15_IRQHandler	8	static
+../MIMXRT1052/pinmux_utility_imxrt_series.c:82:6:enable_autobaud_pin_irq	8	static
+../MIMXRT1052/pinmux_utility_imxrt_series.c:94:6:disable_autobaud_pin_irq	8	static

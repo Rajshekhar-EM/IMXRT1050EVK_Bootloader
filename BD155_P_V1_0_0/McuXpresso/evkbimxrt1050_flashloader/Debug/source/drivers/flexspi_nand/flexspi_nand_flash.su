@@ -1,0 +1,8 @@
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:135:10:flexspi_nand_check_error_status	56	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:78:10:flexspi_nand_check_ecc_status	56	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:189:10:flexspi_nand_init	16	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:211:10:flexspi_nand_read_page	72	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:325:10:flexspi_nand_erase_block	64	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:400:10:flexspi_nand_erase	24	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:423:10:flexspi_nand_program_page	72	static
+../source/drivers/flexspi_nand/flexspi_nand_flash.c:573:10:flexspi_nand_get_config	88	static

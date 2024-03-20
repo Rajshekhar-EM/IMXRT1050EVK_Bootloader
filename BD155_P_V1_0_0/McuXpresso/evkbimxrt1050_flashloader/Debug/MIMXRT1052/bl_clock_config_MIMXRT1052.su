@@ -1,0 +1,16 @@
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:57:6:usb_clock_init	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:82:6:clock_setup	12	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:49:6:configure_clocks	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:297:6:flexspi_clock_gate_enable	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:303:6:flexspi_clock_gate_disable	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:217:6:flexspi_clock_config	64	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:309:10:flexspi_get_clock	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:358:10:flexspi_get_max_supported_freq	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:387:10:semc_get_clock	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:435:6:semc_axi_clock_config	8	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:538:6:semc_clock_gate_enable	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:544:6:semc_clock_gate_disable	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:551:10:microseconds_get_clock	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:560:10:get_bus_clock	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:209:10:get_ocotp_clock	0	static
+../MIMXRT1052/bl_clock_config_MIMXRT1052.c:566:6:flexspi_sw_delay_us	16	static

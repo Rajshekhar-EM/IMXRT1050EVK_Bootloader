@@ -1,0 +1,17 @@
+../source/drivers/semc_nand/semc_nand_flash.c:1120:10:semc_nand_issue_read_status	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:863:10:semc_nand_wait_for_ready	40	static
+../source/drivers/semc_nand/semc_nand_flash.c:990:10:semc_nand_issue_read_mode	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:1330:10:semc_nand_issue_change_read_column	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:1774:10:semc_nand_write_ecc_data_in_spare_area	432	static
+../source/drivers/semc_nand/semc_nand_flash.c:1549:6:semc_nand_is_device_ecc_check_passed	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:1012:10:semc_nand_issue_access_feature	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:1468:10:semc_nand_set_device_ecc	32	static
+../source/drivers/semc_nand/semc_nand_flash.c:950:10:semc_nand_issue_read_id	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:1175:10:semc_nand_wait_for_device_ready	40	static
+../source/drivers/semc_nand/semc_nand_flash.c:1240:10:semc_nand_issue_read_page	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:1869:10:semc_nand_flash_init	88	static
+../source/drivers/semc_nand/semc_nand_flash.c:2004:10:semc_nand_flash_read_page	320	static
+../source/drivers/semc_nand/semc_nand_flash.c:2303:10:semc_nand_flash_verify_erase	24	static
+../source/drivers/semc_nand/semc_nand_flash.c:2261:10:semc_nand_flash_erase_block	32	static
+../source/drivers/semc_nand/semc_nand_flash.c:2332:10:semc_nand_flash_verify_page_program	16	static
+../source/drivers/semc_nand/semc_nand_flash.c:2131:10:semc_nand_flash_page_program	64	static

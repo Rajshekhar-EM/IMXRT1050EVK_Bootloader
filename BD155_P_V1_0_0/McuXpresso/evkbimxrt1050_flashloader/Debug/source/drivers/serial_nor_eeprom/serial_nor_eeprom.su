@@ -1,0 +1,9 @@
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:352:17:serial_nor_eeprom_common_sequence	40	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:447:17:serial_nor_eeprom_enable_write	24	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:480:13:serial_nor_eeprom_is_busy	16	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:56:10:serial_nor_eeprom_init	24	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:102:10:serial_nor_eeprom_read	8	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:271:10:serial_nor_eeprom_write	32	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:564:17:serial_nor_eeprom_soft_erase	32	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:136:10:serial_nor_eeprom_erase	24	static
+../source/drivers/serial_nor_eeprom/serial_nor_eeprom.c:218:10:serial_nor_eeprom_erase_all	16	static

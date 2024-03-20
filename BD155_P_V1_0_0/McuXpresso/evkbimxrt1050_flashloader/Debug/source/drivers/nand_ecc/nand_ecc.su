@@ -1,0 +1,3 @@
+../source/drivers/nand_ecc/nand_ecc.c:143:6:nand_ecc_sec_calculate_encode	48	static
+../source/drivers/nand_ecc/nand_ecc.c:206:10:nand_ecc_count_bit1	8	static
+../source/drivers/nand_ecc/nand_ecc.c:224:10:nand_ecc_sec_verify_correct	32	static

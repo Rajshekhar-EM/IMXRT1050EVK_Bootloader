@@ -1,0 +1,5 @@
+../MIMXRT1052/sdmmc_config_MIMXRT1052.c:66:6:usdhc_power_control_init	16	static
+../MIMXRT1052/sdmmc_config_MIMXRT1052.c:90:6:usdhc_power_control	0	static
+../MIMXRT1052/sdmmc_config_MIMXRT1052.c:102:6:usdhc_vselect_init	0	static
+../MIMXRT1052/sdmmc_config_MIMXRT1052.c:117:10:get_mmc_default_configuration	0	static
+../MIMXRT1052/sdmmc_config_MIMXRT1052.c:184:10:get_sd_default_configuration	0	static

@@ -1,0 +1,13 @@
+../source/memory/src/mmc_memory.c:690:10:mmc_mem_finalize	0	static
+../source/memory/src/mmc_memory.c:891:13:is_erased_memory	24	static
+../source/memory/src/mmc_memory.c:536:10:mmc_mem_read	48	static
+../source/memory/src/mmc_memory.c:839:17:mmc_mem_flush_buffer	8	static
+../source/memory/src/mmc_memory.c:594:10:mmc_mem_write	48	static
+../source/memory/src/mmc_memory.c:680:10:mmc_mem_flush	0	static
+../source/memory/src/mmc_memory.c:700:10:mmc_mem_erase	16	static
+../source/memory/src/mmc_memory.c:948:17:get_current_block_count.constprop	0	static
+../source/memory/src/mmc_memory.c:782:10:mmc_get_property.part.0	16	static
+../source/memory/src/mmc_memory.c:355:10:mmc_mem_config	48	static
+../source/memory/src/mmc_memory.c:744:10:mmc_mem_erase_all	16	static
+../source/memory/src/mmc_memory.c:308:10:mmc_mem_init	16	static
+../source/memory/src/mmc_memory.c:782:10:mmc_get_property	0	static

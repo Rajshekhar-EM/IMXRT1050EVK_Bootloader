@@ -1,0 +1,14 @@
+../source/memory/src/memory.c:311:10:mem_flush	8	static
+../source/memory/src/memory.c:329:10:mem_finalize	8	static
+../source/memory/src/memory.c:485:10:mem_init	16	static
+../source/memory/src/memory.c:354:10:find_map_entry	8	static
+../source/memory/src/memory.c:390:10:find_external_map_entry	16	static
+../source/memory/src/memory.c:60:10:mem_read	24	static
+../source/memory/src/memory.c:429:10:find_external_map_index	12	static
+../source/memory/src/memory.c:461:6:mem_is_block_reserved	16	static
+../source/memory/src/memory.c:102:10:mem_write_check	24	static
+../source/memory/src/memory.c:134:10:mem_write	32	static
+../source/memory/src/memory.c:210:10:mem_erase	24	static
+../source/memory/src/memory.c:272:10:mem_fill	24	static
+../source/memory/src/memory.c:515:10:mem_config	4	static
+../source/memory/src/memory.c:570:6:mem_is_erased	0	static

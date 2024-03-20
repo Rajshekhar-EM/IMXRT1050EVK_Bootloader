@@ -1,0 +1,7 @@
+../source/usb/bm_composite/usb_descriptor.c:570:14:usb_device_get_hid_descriptor	0	static
+../source/usb/bm_composite/usb_descriptor.c:577:14:usb_device_get_hid_report_descriptor	0	static
+../source/usb/bm_composite/usb_descriptor.c:594:14:usb_device_get_hid_physical_descriptor	0	static
+../source/usb/bm_composite/usb_descriptor.c:610:14:usb_device_get_device_descriptor	0	static
+../source/usb/bm_composite/usb_descriptor.c:628:14:usb_device_get_configuration_descriptor	0	static
+../source/usb/bm_composite/usb_descriptor.c:651:14:usb_device_get_string_descriptor	8	static
+../source/usb/bm_composite/usb_descriptor.c:696:14:usb_device_set_speed	12	static

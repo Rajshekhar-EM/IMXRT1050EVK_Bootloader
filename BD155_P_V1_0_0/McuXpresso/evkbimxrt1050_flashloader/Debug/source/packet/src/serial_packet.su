@@ -1,0 +1,14 @@
+../source/packet/src/serial_packet.c:84:6:serial_packet_queue_byte	0	static
+../source/packet/src/serial_packet.c:91:10:serial_packet_init	0	static
+../source/packet/src/serial_packet.c:235:10:serial_packet_get_max_packet_size	0	static
+../source/packet/src/serial_packet.c:342:17:write_data	4	static
+../source/packet/src/serial_packet.c:353:17:read_data	72	static
+../source/packet/src/serial_packet.c:509:17:calculate_framing_crc16	24	static
+../source/packet/src/serial_packet.c:463:17:read_header	8	static
+../source/packet/src/serial_packet.c:227:6:serial_packet_abort	8	static
+../source/packet/src/serial_packet.c:241:10:serial_packet_send_sync	24	static
+../source/packet/src/serial_packet.c:321:17:send_deferred_ack	0	static
+../source/packet/src/serial_packet.c:97:10:serial_packet_finalize	0	static
+../source/packet/src/serial_packet.c:169:10:serial_packet_write	32	static
+../source/packet/src/serial_packet.c:305:10:serial_send_ping_response	16	static
+../source/packet/src/serial_packet.c:103:10:serial_packet_read	48	static

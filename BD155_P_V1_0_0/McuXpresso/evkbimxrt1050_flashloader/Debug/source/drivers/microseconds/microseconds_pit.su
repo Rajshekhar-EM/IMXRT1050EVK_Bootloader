@@ -1,0 +1,9 @@
+../source/drivers/microseconds/microseconds_pit.c:83:6:microseconds_shutdown	0	static
+../source/drivers/microseconds/microseconds_pit.c:94:10:microseconds_get_ticks	8	static
+../source/drivers/microseconds/microseconds_pit.c:125:10:microseconds_convert_to_microseconds	0	static
+../source/drivers/microseconds/microseconds_pit.c:132:10:microseconds_convert_to_ticks	0	static
+../source/drivers/microseconds/microseconds_pit.c:140:6:microseconds_delay	16	static
+../source/drivers/microseconds/microseconds_pit.c:155:6:microseconds_set_delay	8	static
+../source/drivers/microseconds/microseconds_pit.c:166:6:microseconds_timeout	8	static
+../source/drivers/microseconds/microseconds_pit.c:174:17:microseconds_get_clock	0	static
+../source/drivers/microseconds/microseconds_pit.c:48:6:microseconds_init	8	static

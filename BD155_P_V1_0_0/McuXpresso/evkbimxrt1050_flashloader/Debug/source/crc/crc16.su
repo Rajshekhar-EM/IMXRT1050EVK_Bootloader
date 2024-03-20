@@ -1,0 +1,5 @@
+../source/crc/crc16.c:125:6:crc16_init	8	static
+../source/crc/crc16.c:133:6:crc16_update	16	static
+../source/crc/crc16.c:160:6:crc16_finalize	8	static
+../source/crc/crc16.c:168:6:crc16_onfi_init	8	static
+../source/crc/crc16.c:176:6:crc16_onfi_update	16	static

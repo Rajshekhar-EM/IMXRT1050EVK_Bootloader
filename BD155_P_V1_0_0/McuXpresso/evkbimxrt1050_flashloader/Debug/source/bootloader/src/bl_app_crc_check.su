@@ -1,0 +1,3 @@
+../source/bootloader/src/bl_app_crc_check.c:55:6:init_crc_check_status	0	static
+../source/bootloader/src/bl_app_crc_check.c:71:10:calculate_application_crc32	32	static
+../source/bootloader/src/bl_app_crc_check.c:167:6:is_application_crc_check_pass	16	static

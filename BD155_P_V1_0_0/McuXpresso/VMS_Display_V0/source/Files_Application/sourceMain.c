@@ -57,7 +57,7 @@
 												 FSL_ROM_FLEXSPI_BITMASK(kFLEXSPIMiscOffset_SafeConfigFreqEnable) |
 												 FSL_ROM_FLEXSPI_BITMASK(kFLEXSPIMiscOffset_DdrModeEnable);
 		config->memConfig.sflashPadType = kSerialFlash_8Pads; /* Pad Type: 1 - Single, 2 - Dual, 4 - Quad, 8 - Octal */
-		config->pageSize                = SEC_16KB;//FLASH_PAGE_SIZE;
+		config->pageSize                = FLASH_PAGE_SIZE;
 		config->sectorSize              = FLASH_SECTOR_SIZE;
 		config->blockSize               = FLASH_BLOCK_SIZE;
 		config->isUniformBlockSize      = true;
@@ -575,7 +575,7 @@
 							funcDelayUs(1);
 						}
 
-						if(kg >= SEC_16KB || record_type == 0x01)
+						if(kg >= PRGM_PAGE_SIZE || record_type == 0x01)
 						{
 							if(record_type == 0x01)
 							{
@@ -650,7 +650,7 @@
 									//error_trap();
 								}
 
-								NorAddress        = SEC_16KB + NorAddress;
+								NorAddress        = PRGM_PAGE_SIZE + NorAddress;
 								FlexSPINorAddress = EXAMPLE_FLEXSPI_AMBA_BASE + NorAddress;
 							}
 
@@ -2072,7 +2072,6 @@ void Initialization(void)
     BOARD_InitLcd();
     BOARD_InitGPT();
 //	SysTick_Config(SystemCoreClock / 100); //1ms systick
-
 
 	//HyperFlash();//initialization and erasing
 	//USB_HostApplicationInit();

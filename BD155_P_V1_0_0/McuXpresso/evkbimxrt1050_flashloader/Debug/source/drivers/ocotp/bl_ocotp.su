@@ -1,0 +1,5 @@
+../source/drivers/ocotp/bl_ocotp.c:357:20:ocotp_set_read_timing	0	static
+../source/drivers/ocotp/bl_ocotp.c:277:17:ocotp_wait_for_busy.constprop	24	static
+../source/drivers/ocotp/bl_ocotp.c:65:10:ocotp_init	24	static
+../source/drivers/ocotp/bl_ocotp.c:88:10:ocotp_program_once	24	static
+../source/drivers/ocotp/bl_ocotp.c:172:10:ocotp_read_once	24	static

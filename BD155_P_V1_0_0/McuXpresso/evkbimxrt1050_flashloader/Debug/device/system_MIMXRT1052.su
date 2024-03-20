@@ -1,0 +1,4 @@
+../device/system_MIMXRT1052.c:55:6:RTWDOG_disable	0	static
+../device/system_MIMXRT1052.c:81:6:SystemInit	0	static
+../device/system_MIMXRT1052.c:107:6:SystemCoreClockUpdate	0	static
+../device/system_MIMXRT1052.c:113:28:SystemInitHook	0	static

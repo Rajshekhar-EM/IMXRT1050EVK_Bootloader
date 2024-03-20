@@ -1,0 +1,16 @@
+../source/drivers/dcp/bl_dcp.c:171:13:dcp_enable	0	static
+../source/drivers/dcp/bl_dcp.c:310:5:dcp_wait_task_done	20	static
+../source/drivers/dcp/bl_dcp.c:454:6:uint32_to_be	16	static
+../source/drivers/dcp/bl_dcp.c:266:6:dcp_aes_config_key_iv.constprop.isra	16	static
+../source/drivers/dcp/bl_dcp.c:183:5:dcp_aes_init	8	static
+../source/drivers/dcp/bl_dcp.c:352:5:dcp_aes_cbc_crypt	80	static
+../source/drivers/dcp/bl_dcp.c:384:5:dcp_aes_ecb_crypt	80	static
+../source/drivers/dcp/bl_dcp.c:416:5:dcp_aes_ctr_crypt	56	static
+../source/drivers/dcp/bl_dcp.c:504:5:aes_ccm_auth_crypt	112	static
+../source/drivers/dcp/bl_dcp.c:638:5:dcp_aes_ccm_encrypt_and_mac	40	static
+../source/drivers/dcp/bl_dcp.c:653:5:dcp_aes_ccm_auth_decrypt	72	static
+../source/drivers/dcp/bl_dcp.c:688:5:dcp_aes_exit	8	static
+../source/drivers/dcp/bl_dcp.c:705:6:dcp_aes_restore	0	static
+../source/drivers/dcp/bl_dcp.c:715:6:dcp_entry	0	static
+../source/drivers/dcp/bl_dcp.c:208:5:dcp_aes_set_key	24	static
+../source/drivers/dcp/bl_dcp.c:721:6:dcp_exit	8	static

@@ -1,0 +1,11 @@
+../source/drivers/semc_nor/semc_nor_flash.c:585:6:semc_nor_issue_exit_read_cfi_auto_select	16	static
+../source/drivers/semc_nor/semc_nor_flash.c:545:6:semc_nor_issue_reset_to_read	24	static
+../source/drivers/semc_nor/semc_nor_flash.c:609:6:semc_nor_issue_unlock_bypass_reset	16	static
+../source/drivers/semc_nor/semc_nor_flash.c:382:10:semc_nor_check_toggle_bit	56	static
+../source/drivers/semc_nor/semc_nor_flash.c:594:6:semc_nor_issue_unlock_bypass.constprop	16	static
+../source/drivers/semc_nor/semc_nor_flash.c:207:9:semc_nor_get_specific_ac_cycles	8	static
+../source/drivers/semc_nor/semc_nor_flash.c:730:10:semc_nor_flash_verify_erase	0	static
+../source/drivers/semc_nor/semc_nor_flash.c:748:10:semc_nor_flash_verify_program	8	static
+../source/drivers/semc_nor/semc_nor_flash.c:769:10:semc_nor_flash_init	64	static
+../source/drivers/semc_nor/semc_nor_flash.c:811:10:semc_nor_flash_page_program	72	static
+../source/drivers/semc_nor/semc_nor_flash.c:851:10:semc_nor_flash_erase_block	64	static

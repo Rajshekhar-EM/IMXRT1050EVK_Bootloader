@@ -1,0 +1,2 @@
+../source/bootloader/src/bl_keyblob.c:29:9:keyblob_update	24	static
+../source/bootloader/src/bl_keyblob.c:93:9:keyblob_get	24	static

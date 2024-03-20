@@ -1,0 +1,5 @@
+../source/bootloader/src/lpuart_peripheral_interface.c:151:6:lpuart_full_shutdown	16	static
+../source/bootloader/src/lpuart_peripheral_interface.c:121:10:lpuart_full_init	8	static
+../source/bootloader/src/lpuart_peripheral_interface.c:61:6:lpuart_poll_for_activity	48	static
+../source/bootloader/src/lpuart_peripheral_interface.c:206:10:lpuart_write	8	static
+../source/bootloader/src/lpuart_peripheral_interface.c:252:6:LPUART1_IRQHandler	8	static

@@ -1,0 +1,6 @@
+../source/bootloader/src/bl_main.c:81:13:get_peripheral_name	48	static
+../source/bootloader/src/bl_main.c:171:13:jump_to_application.constprop	8	static
+../source/bootloader/src/bl_main.c:208:6:is_valid_application_location	16	static
+../source/bootloader/src/bl_main.c:232:6:is_valid_stackpointer_location	0	static
+../source/bootloader/src/bl_main.c:643:5:main	16	static
+../source/bootloader/src/bl_main.c:656:6:exit	0	static

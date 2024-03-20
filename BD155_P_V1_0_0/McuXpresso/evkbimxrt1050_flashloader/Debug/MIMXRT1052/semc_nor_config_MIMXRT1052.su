@@ -1,0 +1,2 @@
+../MIMXRT1052/semc_nor_config_MIMXRT1052.c:104:6:semc_nor_get_config_data_from_fuse	0	static
+../MIMXRT1052/semc_nor_config_MIMXRT1052.c:274:10:semc_nor_get_default_config_block	16	static

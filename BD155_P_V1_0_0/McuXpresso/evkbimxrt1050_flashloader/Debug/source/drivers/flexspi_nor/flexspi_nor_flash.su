@@ -1,0 +1,17 @@
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:575:10:flexspi_nor_wait_busy	48	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:522:10:flexspi_nor_write_enable	64	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:487:17:flexspi_nor_restore_no_cmd_mode	64	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:613:6:flexspi_change_serial_clock	32	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:997:10:flexspi_nor_read_sfdp.part.0	64	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:1910:10:flexspi_nor_read_sfdp_info	136	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:439:10:flexspi_nor_flash_init	16	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:2172:10:flexspi_nor_generate_config_block_hyperflash	104	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:683:10:flexspi_nor_flash_page_program	72	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:761:10:flexspi_nor_flash_erase_all	96	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:857:10:flexspi_nor_flash_erase_sector	64	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:927:10:flexspi_nor_flash_erase_block	64	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:1373:10:get_page_sector_block_size_from_sfdp	32	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:3402:10:flexspi_nor_flash_erase	24	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:3466:10:flexspi_nor_flash_read	72	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:3510:10:flexspi_nor_restore_spi_protocol	104	static
+../source/drivers/flexspi_nor/flexspi_nor_flash.c:3294:10:flexspi_nor_get_config	320	static

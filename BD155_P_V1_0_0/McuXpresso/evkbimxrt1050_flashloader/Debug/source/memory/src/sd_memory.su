@@ -1,0 +1,11 @@
+../source/memory/src/sd_memory.c:637:10:sd_mem_finalize	0	static
+../source/memory/src/sd_memory.c:821:13:is_erased_memory	24	static
+../source/memory/src/sd_memory.c:477:10:sd_mem_read	48	static
+../source/memory/src/sd_memory.c:769:17:sd_mem_flush_buffer	8	static
+../source/memory/src/sd_memory.c:538:10:sd_mem_write	48	static
+../source/memory/src/sd_memory.c:627:10:sd_mem_flush	0	static
+../source/memory/src/sd_memory.c:279:10:sd_mem_init	16	static
+../source/memory/src/sd_memory.c:645:10:sd_mem_erase	16	static
+../source/memory/src/sd_memory.c:688:10:sd_mem_erase_all	8	static
+../source/memory/src/sd_memory.c:323:10:sd_mem_config	32	static
+../source/memory/src/sd_memory.c:719:10:sd_get_property	0	static

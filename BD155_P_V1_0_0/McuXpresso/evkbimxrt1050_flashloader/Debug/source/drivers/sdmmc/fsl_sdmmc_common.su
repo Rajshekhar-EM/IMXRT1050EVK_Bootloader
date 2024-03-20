@@ -1,0 +1,9 @@
+../source/drivers/sdmmc/fsl_sdmmc_common.c:19:10:SDMMC_SelectCard	72	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:52:10:SDMMC_SendApplicationCommand	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:80:10:SDMMC_SetBlockCount	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:101:10:SDMMC_GoIdle	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:120:10:SDMMC_GoPreIdle	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:140:10:SDMMC_SetBlockSize	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:161:10:SDMMC_SetCardInactive	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:182:10:SDMMC_SwitchVoltage	64	static
+../source/drivers/sdmmc/fsl_sdmmc_common.c:235:10:SDMMC_ExecuteTuning	232	static

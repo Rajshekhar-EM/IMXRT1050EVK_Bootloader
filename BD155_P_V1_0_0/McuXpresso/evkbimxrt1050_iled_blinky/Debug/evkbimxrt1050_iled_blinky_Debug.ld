@@ -6,7 +6,7 @@
  * Generated linker script file for MIMXRT1052xxxxB
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v11.6.1 [Build 8255] [2022-10-03] on 19-Mar-2024, 10:03:16 AM
+ * MCUXpresso IDE v11.6.1 [Build 8255] [2022-10-03] on 20-Mar-2024, 7:06:33 PM
  */
 
 INCLUDE "evkbimxrt1050_iled_blinky_Debug_library.ld"
@@ -16,23 +16,7 @@ ENTRY(ResetISR)
 
 SECTIONS
 {
-     /* Image Vector Table and Boot Data for booting from external flash */
-    .boot_hdr : ALIGN(4)
-    {
-        FILL(0xff)
-        __boot_hdr_start__ = ABSOLUTE(.) ;
-        KEEP(*(.boot_hdr.conf))
-        . = 0x1000 ;
-        KEEP(*(.boot_hdr.ivt))
-        . = 0x1020 ;
-        KEEP(*(.boot_hdr.boot_data))
-        . = 0x1030 ;
-        KEEP(*(.boot_hdr.dcd_data))
-        __boot_hdr_end__ = ABSOLUTE(.) ;
-        . = 0x2000 ;
-    } >BOARD_FLASH
-
-    /* MAIN TEXT SECTION */
+     /* MAIN TEXT SECTION */
     .text : ALIGN(4)
     {
         FILL(0xff)

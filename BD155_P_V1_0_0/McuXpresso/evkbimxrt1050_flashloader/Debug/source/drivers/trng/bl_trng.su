@@ -1,0 +1,6 @@
+../source/drivers/trng/bl_trng.c:1336:17:trng_SetStatisticalCheckLimit	8	static
+../source/drivers/trng/bl_trng.c:1197:17:trng_GetInstance.isra	8	static
+../source/drivers/trng/bl_trng.c:1259:10:TRNG_GetDefaultConfig	0	static
+../source/drivers/trng/bl_trng.c:1594:10:TRNG_Init	16	static
+../source/drivers/trng/bl_trng.c:1649:6:TRNG_Deinit	8	static
+../source/drivers/trng/bl_trng.c:1684:10:TRNG_GetRandomData	32	static
