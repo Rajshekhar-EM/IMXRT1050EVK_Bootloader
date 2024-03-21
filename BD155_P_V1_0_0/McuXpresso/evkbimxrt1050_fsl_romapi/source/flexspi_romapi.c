@@ -274,9 +274,9 @@ static void USB_HostApplicationInit(void)
 
 #define BUFFER_LEN 				  	FLASH_PAGE_SIZE
 
-#define APP_WRITE_START_ADDR	  	0x80000
+#define APP_WRITE_START_ADDR	  	0//0x80000
 // Define the address to jump to in HyperFlash memory
-#define JUMP_ADDRESS  				0x60080305
+#define JUMP_ADDRESS  				0x6002305//0x60080305
 
 #define DATA_RECORD					0x00
 #define E_O_F						0x01
@@ -800,9 +800,11 @@ void ReadFromPendrive(void)
 //	error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
-	error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
+	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEP.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSP0.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	if(error == FR_OK)
@@ -1207,8 +1209,7 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 	NVIC->ICPR[6] = 0xFFFFFFFF;
 	NVIC->ICPR[7] = 0xFFFFFFFF;
 #if 1
-	 uint32_t stackPointer = 0x60080000;
-//	 uint32_t stackPointer;
+	 uint32_t stackPointer;// = 0x60080000;
 //	 get_user_application_entry(&applicationAddress, &stackPointer);
 	// Create the function call to the user application.
 	// Static variables are needed since changed the stack pointer out from under the compiler
@@ -1216,11 +1217,35 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 	static uint32_t s_stackPointer = 0;
 	s_stackPointer = stackPointer;
 	static void (*farewellBootloader)(void) = 0;
-    farewellBootloader = (void (*)(void))applicationAddress;
+//    farewellBootloader = (void (*)(void))applicationAddress;
+    farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
 	// Set the VTOR to the application vector table address.
 //    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
-	SCB->VTOR = (uint32_t)0x60080000;
+//	SCB->VTOR = (uint32_t)0x60001000;
+
+    // Define the new IVT location in memory
+    #define NEW_IVT_LOCATION 0x60001000
+
+    uint32_t *old_ivt = (uint32_t *)SCB->VTOR; // Get the current IVT location
+    uint32_t *new_ivt = (uint32_t *)NEW_IVT_LOCATION;
+
+    // Copy the IVT to the new location
+#define NVIC_NUM_VECTORS 16
+    for (int i = 0; i < NVIC_NUM_VECTORS; i++) {
+        new_ivt[i] = old_ivt[i];
+    }
+
+    // Update the VTOR to point to the new IVT location
+    SCB->VTOR = NEW_IVT_LOCATION;
+
+	 // Restore global interrupt.
+	 __enable_irq();
+
+	// Memory barriers for good measure.
+	__ISB();
+	__DSB();
+
 
 	// Set stack pointers to the application stack pointer.
 	__set_MSP(s_stackPointer);
