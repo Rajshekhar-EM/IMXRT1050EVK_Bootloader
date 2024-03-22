@@ -679,6 +679,7 @@ void HyperFlash(void)
 	uint32_t serialNorTotalSize;
 	uint32_t serialNorSectorSize;
 	uint32_t serialNorPageSize;
+	uint16_t No_of_sec_to_erase = 0;
 
 	/*//BOARD_ConfigMPU();
 		BOARD_InitBootPins();
@@ -736,7 +737,15 @@ void HyperFlash(void)
 	#endif
 	/* Erase one sector. */
 	PRINTF("\r\n Erasing serial NOR flash over FLEXSPI");
-	for(hyper_sec_no = 1, hyperflash_addr = APP_WRITE_START_ADDR; hyper_sec_no < 255, hyperflash_addr < FLASH_SIZE; hyper_sec_no++, hyperflash_addr+= FLASH_SECTOR_SIZE)
+	if(APP_WRITE_START_ADDR == 0x80000)
+	{	//calculation 0x4000000-0x80000/0x40000 = 254
+		No_of_sec_to_erase = 254;
+	}
+	else if(APP_WRITE_START_ADDR == 0)
+	{	//calculation 0x4000000/0x40000 = 256
+		No_of_sec_to_erase = 256;
+	}
+	for(hyper_sec_no = 1, hyperflash_addr = APP_WRITE_START_ADDR; hyper_sec_no <= No_of_sec_to_erase, hyperflash_addr < FLASH_SIZE; hyper_sec_no++, hyperflash_addr+= FLASH_SECTOR_SIZE)
 	{
 		 /* Erase a sector from target device dest address */
 		serialNorAddress        = hyperflash_addr;
@@ -801,7 +810,9 @@ void ReadFromPendrive(void)
 //	error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
-	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSEN.hex"), FA_READ | FA_OPEN_EXISTING);
+	error = f_open(&g_fileObject1,_T("1:VMSEI.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEP.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSP0.hex"), FA_READ | FA_OPEN_EXISTING);
@@ -1177,6 +1188,7 @@ static OSA_SR_ALLOC();
 	// Function to perform the jump
 void jump_to_hyperflash_location(uint32_t applicationAddress)
 {
+	uint32_t stackPointer;
 	// Turn off global interrupt
 	OSA_ENTER_CRITICAL();
 
@@ -1208,38 +1220,75 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 	NVIC->ICPR[5] = 0xFFFFFFFF;
 	NVIC->ICPR[6] = 0xFFFFFFFF;
 	NVIC->ICPR[7] = 0xFFFFFFFF;
-#if 1
+
+   // Disable both D and I caches, Application will enable them back.
+	SCB_DisableDCache();
+	SCB_DisableICache();
+
+	// Restore global interrupt.
+	 __enable_irq();
+
+	// Memory barriers for good measure.
+	__ISB();
+	__DSB();
+
+	// Data memory barrier.
+	__DMB();
+
+	// Relocate vector table.
+	SCB->VTOR = (__IOM uint32_t)0x60002305;//0x60001000;
+
+//	stackPointer = 0x20020000;//DTC
+//	stackPointer = 0x20000;//ITC
+	stackPointer = 0x60002305;
+//	stackPointer = 0x305;//ITC
+	// Set stack pointers to the application stack pointer.
+	__set_MSP(stackPointer);
+	__set_PSP(stackPointer);
+
+
+	// Restore global interrupt.
+	 __enable_irq();
+
+	static void (*farewellBootloader)(void) = 0;
+	farewellBootloader = (void (*)(void))JUMP_ADDRESS;//applicationAddress
+
+	//Jump to the application.
+	farewellBootloader();
+
+	    // Program execution will never reach this line.
+#if 0
 	 uint32_t stackPointer;// = 0x60080000;
-//	 get_user_application_entry(&applicationAddress, &stackPointer);
+	// get_user_application_entry(&applicationAddress, &stackPointer);
 	// Create the function call to the user application.
 	// Static variables are needed since changed the stack pointer out from under the compiler
 	// we need to ensure the values we are using are not stored on the previous stack
 	static uint32_t s_stackPointer = 0;
 	s_stackPointer = stackPointer;
 	static void (*farewellBootloader)(void) = 0;
-//    farewellBootloader = (void (*)(void))applicationAddress;
+//  farewellBootloader = (void (*)(void))applicationAddress;
     farewellBootloader = (void (*)(void))JUMP_ADDRESS;
 
-	// Set the VTOR to the application vector table address.
-//    SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
-//	SCB->VTOR = (uint32_t)0x60001000;
+//  Set the VTOR to the application vector table address.
+//  SCB->VTOR = (uint32_t)APP_VECTOR_TABLE;
+	SCB->VTOR = 0;//(uint32_t)0x60001000;
 
-    // Define the new IVT location in memory
-    #define NEW_IVT_LOCATION 0x60001000
+//    // Define the new IVT location in memory
+//    #define NEW_IVT_LOCATION 0x60001000
+//
+//    uint32_t *old_ivt = (uint32_t *)SCB->VTOR; // Get the current IVT location
+//    uint32_t *new_ivt = (uint32_t *)NEW_IVT_LOCATION;
+//
+//    // Copy the IVT to the new location
+//#define NVIC_NUM_VECTORS 16
+//    for (int i = 0; i < NVIC_NUM_VECTORS; i++) {
+//        new_ivt[i] = old_ivt[i];
+//    }
+//
+//    // Update the VTOR to point to the new IVT location
+//    SCB->VTOR = NEW_IVT_LOCATION;
 
-    uint32_t *old_ivt = (uint32_t *)SCB->VTOR; // Get the current IVT location
-    uint32_t *new_ivt = (uint32_t *)NEW_IVT_LOCATION;
-
-    // Copy the IVT to the new location
-#define NVIC_NUM_VECTORS 16
-    for (int i = 0; i < NVIC_NUM_VECTORS; i++) {
-        new_ivt[i] = old_ivt[i];
-    }
-
-    // Update the VTOR to point to the new IVT location
-    SCB->VTOR = NEW_IVT_LOCATION;
-
-	 // Restore global interrupt.
+	// Restore global interrupt.
 	 __enable_irq();
 
 	// Memory barriers for good measure.

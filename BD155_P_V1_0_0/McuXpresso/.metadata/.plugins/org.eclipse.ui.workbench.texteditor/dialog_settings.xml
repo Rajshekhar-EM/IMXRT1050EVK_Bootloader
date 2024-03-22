@@ -6,8 +6,9 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value=""/>
+		<item key="selection" value="OSA_MutexLock"/>
 		<list key="findhistory">
+			<item value="OSA_MutexLock"/>
 			<item value="NVIC_NUM_VECTORS"/>
 			<item value="BOARD_ConfigMPU"/>
 			<item value="NVIC_ClearEnabledIRQs"/>
@@ -22,7 +23,6 @@
 			<item value="funcClockDataIn"/>
 			<item value="funcClockDataOut"/>
 			<item value="funcI2cRead"/>
-			<item value="funcI2cWrite"/>
 		</list>
 		<list key="replacehistory">
 			<item value="2_DAY"/>
