@@ -320,22 +320,22 @@ usb_status_t USB_HostDeinit(usb_host_handle hostHandle)
     }
 
     /* device list detach */
-    deviceInstance = (usb_host_device_instance_t *)hostInstance->deviceList;
-    while (deviceInstance != NULL)
-    {
-        deviceInstance = (usb_host_device_instance_t *)hostInstance->deviceList;
-        (void)USB_HostDetachDeviceInternal(hostHandle, deviceInstance);
-    }
+//    deviceInstance = (usb_host_device_instance_t *)hostInstance->deviceList;
+//    while (deviceInstance != NULL)
+//    {
+//        deviceInstance = (usb_host_device_instance_t *)hostInstance->deviceList;
+//        (void)USB_HostDetachDeviceInternal(hostHandle, deviceInstance);
+//    }
 
     /* controller instance destroy, the callbackFn is initialized in USB_HostGetControllerInterface */
-    status                         = hostInstance->controllerTable->controllerDestory(hostInstance->controllerHandle);
-    hostInstance->controllerHandle = NULL;
-    if (status != kStatus_USB_Success)
-    {
-#ifdef HOST_ECHO
-        usb_echo("host controller destroy fail\r\n");
-#endif
-    }
+//    status                         = hostInstance->controllerTable->controllerDestory(hostInstance->controllerHandle);
+//    hostInstance->controllerHandle = NULL;
+//    if (status != kStatus_USB_Success)
+//    {
+//#ifdef HOST_ECHO
+//        usb_echo("host controller destroy fail\r\n");
+//#endif
+//    }
 
     /* resource release */
     if (NULL != hostInstance->hostMutex)

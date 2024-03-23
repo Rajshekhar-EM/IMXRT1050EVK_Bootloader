@@ -6,7 +6,7 @@
  * Generated linker script file for MIMXRT1052xxxxB
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v11.6.1 [Build 8255] [2022-10-03] on 22-Mar-2024, 7:09:56 PM
+ * MCUXpresso IDE v11.6.1 [Build 8255] [2022-10-03] on 23-Mar-2024, 1:52:49 PM
  */
 
 INCLUDE "evkbimxrt1050_fsl_romapi_Debug_library.ld"

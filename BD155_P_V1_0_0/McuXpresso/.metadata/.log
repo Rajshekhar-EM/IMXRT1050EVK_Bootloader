@@ -172,3 +172,925 @@ Caused by: java.lang.Exception: Cannot access memory at address 0xf0006818
 
 !ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-22 19:10:26.660
 !MESSAGE Target not available.
+!SESSION 2024-03-23 10:01:22.235 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.crt.log 4 -1 2024-03-23 10:01:36.776
+!MESSAGE The provided location 'C:\Users\EME01-L-26\mcuxpresso\02\SDKPackages' is not a valid location.
+!STACK 0
+java.lang.Exception: java.io.IOException: The provided location 'C:\Users\EME01-L-26\mcuxpresso\02\SDKPackages' is not a valid location.
+	at com.crt.utils.general.Reporter.log(Reporter.java:591)
+	at com.nxp.mcuxpresso.core.datamodels.providers.SDKManifestProvider.getInstance(SDKManifestProvider.java:522)
+	at com.nxp.mcuxpresso.core.datamodels.SDKChipVendorDatabase.<init>(SDKChipVendorDatabase.java:294)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.base/java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.eclipse.core.internal.registry.osgi.RegistryStrategyOSGI.createExecutableExtension(RegistryStrategyOSGI.java:204)
+	at org.eclipse.core.internal.registry.ExtensionRegistry.createExecutableExtension(ExtensionRegistry.java:920)
+	at org.eclipse.core.internal.registry.ConfigurationElement.createExecutableExtension(ConfigurationElement.java:246)
+	at org.eclipse.core.internal.registry.ConfigurationElementHandle.createExecutableExtension(ConfigurationElementHandle.java:63)
+	at com.crt.config.database.partssupport.PartSupportConfiguration.buildDataBases(PartSupportConfiguration.java:96)
+	at com.crt.config.database.partssupport.PartSupportConfiguration.<init>(PartSupportConfiguration.java:49)
+	at com.crt.config.database.partssupport.PartSupportConfiguration.getInstance(PartSupportConfiguration.java:72)
+	at com.crt.config.database.TargetConfig.getCore(TargetConfig.java:707)
+	at com.crt.config.database.TargetConfig.initFromString(TargetConfig.java:1336)
+	at com.crt.config.database.TargetConfig.init(TargetConfig.java:1227)
+	at com.crt.config.database.TargetConfig.<init>(TargetConfig.java:680)
+	at com.crt.config.database.TargetConfig.loadTargetConfig(TargetConfig.java:354)
+	at com.crt.config.database.TargetConfigDatabase.load(TargetConfigDatabase.java:73)
+	at com.crt.config.database.TargetConfigDatabase.findTargetConfig(TargetConfigDatabase.java:136)
+	at com.crt.config.database.TargetConfig.findTargetConfig(TargetConfig.java:107)
+	at com.crt.config.database.partssupport.AbstractLinkerScriptHandler.findEntry(AbstractLinkerScriptHandler.java:83)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsApplies.getLinkerScriptExtension(CRPOptionsApplies.java:41)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsApplies.isOptionValid(CRPOptionsApplies.java:67)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsApplies.isOptionVisible(CRPOptionsApplies.java:110)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.setCRPeDefines(CRPOptionsHandler.java:153)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.apply(CRPOptionsHandler.java:52)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.open(CRPOptionsHandler.java:128)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.handleValue(CRPOptionsHandler.java:99)
+	at org.eclipse.cdt.managedbuilder.core.ManagedBuildManager.performValueHandlerEvent(ManagedBuildManager.java:3183)
+	at org.eclipse.cdt.managedbuilder.core.ManagedBuildManager.performValueHandlerEvent(ManagedBuildManager.java:3139)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.load(ConfigurationDataProvider.java:406)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:573)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:510)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:240)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:427)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:409)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:403)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:396)
+	at com.crt.utils.general.ProjectUtils.isCDTProject(ProjectUtils.java:69)
+	at com.crt.config.database.TargetConfig.loadTargetConfig(TargetConfig.java:347)
+	at com.crt.config.database.TargetConfigDatabase.load(TargetConfigDatabase.java:73)
+	at com.crt.config.database.TargetConfigDatabase.load(TargetConfigDatabase.java:57)
+	at com.crt.config.database.TargetConfigDatabase.getDefault(TargetConfigDatabase.java:36)
+	at com.crt.config.database.TargetConfig.findTargetConfig(TargetConfig.java:107)
+	at com.crt.config.database.partssupport.AbstractLinkerScriptHandler.findEntry(AbstractLinkerScriptHandler.java:83)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsApplies.getLinkerScriptExtension(CRPOptionsApplies.java:41)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsApplies.isOptionValid(CRPOptionsApplies.java:67)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsApplies.isOptionVisible(CRPOptionsApplies.java:110)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.setCRPeDefines(CRPOptionsHandler.java:153)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.apply(CRPOptionsHandler.java:52)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.open(CRPOptionsHandler.java:128)
+	at com.crt.advproject.custom.optionhandlers.CRPOptionsHandler.handleValue(CRPOptionsHandler.java:99)
+	at org.eclipse.cdt.managedbuilder.core.ManagedBuildManager.performValueHandlerEvent(ManagedBuildManager.java:3183)
+	at org.eclipse.cdt.managedbuilder.core.ManagedBuildManager.performValueHandlerEvent(ManagedBuildManager.java:3139)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.load(ConfigurationDataProvider.java:406)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:573)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:510)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:240)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:427)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:409)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:403)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:396)
+	at org.eclipse.cdt.internal.core.model.CProject.computeSourceRoots(CProject.java:610)
+	at org.eclipse.cdt.internal.core.model.CProject.computeChildren(CProject.java:631)
+	at org.eclipse.cdt.internal.core.model.CProject.buildStructure(CProject.java:595)
+	at org.eclipse.cdt.internal.core.model.Openable.generateInfos(Openable.java:264)
+	at org.eclipse.cdt.internal.core.model.CElement.openWhenClosed(CElement.java:428)
+	at org.eclipse.cdt.internal.core.model.CElement.getElementInfo(CElement.java:306)
+	at org.eclipse.cdt.internal.core.model.CElement.getElementInfo(CElement.java:296)
+	at org.eclipse.cdt.internal.core.model.Parent.getChildren(Parent.java:57)
+	at org.eclipse.cdt.internal.core.model.CProject.getSourceRoots(CProject.java:471)
+	at org.eclipse.cdt.internal.core.model.CModelManager.create(CModelManager.java:342)
+	at org.eclipse.cdt.core.model.CoreModel.create(CoreModel.java:124)
+	at org.eclipse.cdt.internal.ui.editor.CDocumentProvider.createTranslationUnit(CDocumentProvider.java:739)
+	at org.eclipse.cdt.internal.ui.editor.CDocumentProvider.createFileInfo(CDocumentProvider.java:771)
+	at org.eclipse.ui.editors.text.TextFileDocumentProvider.connect(TextFileDocumentProvider.java:481)
+	at org.eclipse.cdt.internal.ui.editor.CDocumentProvider.connect(CDocumentProvider.java:724)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.doSetInput(AbstractTextEditor.java:4178)
+	at org.eclipse.ui.texteditor.StatusTextEditor.doSetInput(StatusTextEditor.java:262)
+	at org.eclipse.ui.texteditor.AbstractDecoratedTextEditor.doSetInput(AbstractDecoratedTextEditor.java:1479)
+	at org.eclipse.ui.editors.text.TextEditor.doSetInput(TextEditor.java:153)
+	at org.eclipse.cdt.internal.ui.editor.CEditor.internalDoSetInput(CEditor.java:1445)
+	at org.eclipse.cdt.internal.ui.editor.CEditor.doSetInput(CEditor.java:1409)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.lambda$1(AbstractTextEditor.java:3168)
+	at org.eclipse.ui.internal.WorkbenchWindow.run(WorkbenchWindow.java:2290)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.internalInit(AbstractTextEditor.java:3185)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.init(AbstractTextEditor.java:3210)
+	at org.eclipse.ui.internal.EditorReference.initialize(EditorReference.java:353)
+	at org.eclipse.ui.internal.e4.compatibility.CompatibilityPart.create(CompatibilityPart.java:344)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.e4.core.internal.di.MethodRequestor.execute(MethodRequestor.java:58)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.processAnnotated(InjectorImpl.java:995)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.processAnnotated(InjectorImpl.java:960)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalInject(InjectorImpl.java:140)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:403)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.make(InjectorImpl.java:330)
+	at org.eclipse.e4.core.contexts.ContextInjectionFactory.make(ContextInjectionFactory.java:202)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.createFromBundle(ReflectionContributionFactory.java:91)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.doCreate(ReflectionContributionFactory.java:60)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.create(ReflectionContributionFactory.java:42)
+	at org.eclipse.e4.ui.workbench.renderers.swt.ContributedPartRenderer.createWidget(ContributedPartRenderer.java:132)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createWidget(PartRenderingEngine.java:994)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:658)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.StackRenderer.showTab(StackRenderer.java:1209)
+	at org.eclipse.e4.ui.workbench.renderers.swt.LazyStackRenderer.postProcess(LazyStackRenderer.java:116)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:676)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$1.run(PartRenderingEngine.java:543)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:527)
+	at org.eclipse.e4.ui.workbench.renderers.swt.ElementReferenceRenderer.createWidget(ElementReferenceRenderer.java:73)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createWidget(PartRenderingEngine.java:994)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:658)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(SashRenderer.java:150)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(SashRenderer.java:150)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(SashRenderer.java:150)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(SashRenderer.java:150)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.PerspectiveRenderer.processContents(PerspectiveRenderer.java:51)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.PerspectiveStackRenderer.showTab(PerspectiveStackRenderer.java:82)
+	at org.eclipse.e4.ui.workbench.renderers.swt.LazyStackRenderer.postProcess(LazyStackRenderer.java:116)
+	at org.eclipse.e4.ui.workbench.renderers.swt.PerspectiveStackRenderer.postProcess(PerspectiveStackRenderer.java:64)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:676)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SashRenderer.processContents(SashRenderer.java:150)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.workbench.renderers.swt.SWTPartRenderer.processContents(SWTPartRenderer.java:72)
+	at org.eclipse.e4.ui.workbench.renderers.swt.WBWRenderer.processContents(WBWRenderer.java:658)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:672)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeCreateGui(PartRenderingEngine.java:762)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$2.run(PartRenderingEngine.java:727)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:45)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.createGui(PartRenderingEngine.java:711)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1082)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:338)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1045)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:155)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:644)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:338)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:551)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:156)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:152)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:203)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:136)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:401)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:659)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:596)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1467)
+Caused by: java.io.IOException: The provided location 'C:\Users\EME01-L-26\mcuxpresso\02\SDKPackages' is not a valid location.
+	at com.nxp.mcuxpresso.core.datamodels.providers.SDKManifestProvider.<init>(SDKManifestProvider.java:413)
+	at com.nxp.mcuxpresso.core.datamodels.providers.SDKManifestProvider.getInstance(SDKManifestProvider.java:508)
+	... 211 more
+
+!ENTRY org.eclipse.egit.ui 2 0 2024-03-23 10:01:39.740
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\admin'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-03-23 12:04:50.867
+!MESSAGE Indexed 'evkbimxrt1050_fsl_romapi' (40 sources, 67 headers) in 3.29 sec: 12,162 declarations; 42,274 references; 1 unresolved inclusions; 17 syntax errors; 74 unresolved names (0.14%)
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:07:00.129
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:07:00.936
+!MESSAGE Telnet session connected on port 2333->54916 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:07:02.066
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:07:05.480
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:07:20.322
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:10:33.937
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:10:34.841
+!MESSAGE Telnet session connected on port 2333->54956 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:10:36.183
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:10:38.300
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:10:39.327
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:10:49.460
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:10:54.604
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:10:57.461
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:11:10.077
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:11:10.950
+!MESSAGE Telnet session connected on port 2333->54966 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:11:12.004
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:11:13.294
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:12:13.181
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:12:14.067
+!MESSAGE Telnet session connected on port 2333->54992 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:12:15.531
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:12:17.282
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:12:52.168
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:13:06.038
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:13:06.909
+!MESSAGE Telnet session connected on port 2333->55011 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:13:08.019
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:13:08.761
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:13:22.520
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:14:17.603
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:14:18.473
+!MESSAGE Telnet session connected on port 2333->55030 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:14:19.734
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:14:22.447
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:14:41.898
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:14:48.835
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:14:50.548
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 12:16:15.689
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 12:16:16.546
+!MESSAGE Telnet session connected on port 2333->55047 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:16:18.279
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:16:28.662
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:18:03.739
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:32:03.717
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:32:04.900
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:32:26.585
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:32:36.239
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:32:41.660
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 12:32:42.942
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:11:45.516
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:11:46.368
+!MESSAGE Telnet session connected on port 2333->55684 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:11:48.506
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:11:55.804
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:13:30.018
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:26:34.560
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:26:36.264
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:26:43.278
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:27:24.001
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:28:00.874
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:28:01.740
+!MESSAGE Telnet session connected on port 2333->55805 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:28:03.124
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:28:03.621
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:28:11.196
+!MESSAGE Target not available.
+
+!ENTRY com.crt.log 4 -1 2024-03-23 13:28:13.119
+!MESSAGE org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+!STACK 0
+java.lang.Exception: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+	at com.crt.utils.general.Reporter.log(Reporter.java:591)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:488)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService.handleLocation(ExceptionService.java:761)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:471)
+	... 1 more
+Caused by: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+	... 4 more
+Caused by: java.lang.Exception: Cannot access memory at address 0xffffff12
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1013)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:842)
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:28:16.806
+!MESSAGE Target not available.
+
+!ENTRY com.crt.log 4 -1 2024-03-23 13:28:28.504
+!MESSAGE org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+!STACK 0
+java.lang.Exception: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+	at com.crt.utils.general.Reporter.log(Reporter.java:591)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:488)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService.handleLocation(ExceptionService.java:761)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:471)
+	... 1 more
+Caused by: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967058 -e "4294967058 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff12
+	... 4 more
+Caused by: java.lang.Exception: Cannot access memory at address 0xffffff12
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1013)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:842)
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:29:07.406
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:29:08.282
+!MESSAGE Telnet session connected on port 2333->55818 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:29:09.603
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:29:10.253
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:29:25.995
+!MESSAGE Target not available.
+
+!ENTRY com.crt.log 4 -1 2024-03-23 13:29:30.751
+!MESSAGE org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+!STACK 0
+java.lang.Exception: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+	at com.crt.utils.general.Reporter.log(Reporter.java:591)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:488)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService.handleLocation(ExceptionService.java:761)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:471)
+	... 1 more
+Caused by: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+	... 4 more
+Caused by: java.lang.Exception: Cannot access memory at address 0xffffff52
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1013)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:842)
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:29:33.814
+!MESSAGE Target not available.
+
+!ENTRY com.crt.log 4 -1 2024-03-23 13:30:02.470
+!MESSAGE org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+!STACK 0
+java.lang.Exception: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+	at com.crt.utils.general.Reporter.log(Reporter.java:591)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:488)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService.handleLocation(ExceptionService.java:761)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:471)
+	... 1 more
+Caused by: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967122 -e "4294967122 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff52
+	... 4 more
+Caused by: java.lang.Exception: Cannot access memory at address 0xffffff52
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1013)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:842)
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:30:16.118
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:30:16.983
+!MESSAGE Telnet session connected on port 2333->55865 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:30:18.410
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:30:19.182
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:30:27.226
+!MESSAGE Target not available.
+
+!ENTRY com.crt.log 4 -1 2024-03-23 13:30:39.866
+!MESSAGE org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967114 -e "4294967114 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff4a
+!STACK 0
+java.lang.Exception: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967114 -e "4294967114 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff4a
+	at com.crt.utils.general.Reporter.log(Reporter.java:591)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:488)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.util.concurrent.ExecutionException: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967114 -e "4294967114 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff4a
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService.handleLocation(ExceptionService.java:761)
+	at com.nxp.mcuxpresso.core.debug.services.ExceptionService$7.run(ExceptionService.java:471)
+	... 1 more
+Caused by: org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-data-disassemble -s 4294967114 -e "4294967114 + 100" -- 3
+Error message from debugger back end:
+Cannot access memory at address 0xffffff4a
+	... 4 more
+Caused by: java.lang.Exception: Cannot access memory at address 0xffffff4a
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1013)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:842)
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:38:05.444
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:38:06.346
+!MESSAGE Telnet session connected on port 2333->55942 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:38:07.411
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:38:08.649
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:38:10.598
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:38:58.553
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:38:58.560
+!MESSAGE Target not available.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:38:59.415
+!MESSAGE Telnet session connected on port 2333->55954 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:51.606
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:52.890
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:53.093
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:53.312
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:53.502
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:53.688
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:53.891
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:54.075
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:54.263
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:54.448
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:54.649
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:54.866
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:55.073
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:55.279
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:55.495
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:55.694
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:55.901
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:56.101
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:56.298
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:56.502
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:56.687
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:56.890
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:57.091
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:57.264
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:57.468
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:57.652
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:40:57.872
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:41:52.072
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:41:52.953
+!MESSAGE Telnet session connected on port 2333->55980 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:41:54.912
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:41:55.810
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:42:01.519
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:43:44.658
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:43:50.686
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:43:58.459
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:43:59.470
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:44:10.853
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:44:17.443
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:44:23.576
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:44:26.080
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:44:27.199
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:50:11.374
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:50:12.231
+!MESSAGE Telnet session connected on port 2333->56048 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:50:13.409
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:50:20.490
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:50:26.361
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:50:29.250
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:51:25.573
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:51:26.453
+!MESSAGE Telnet session connected on port 2333->56066 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:51:33.081
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:51:39.197
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:51:44.929
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:51:47.961
+!MESSAGE Target not available.
+
+!ENTRY com.crt.utils 1 0 2024-03-23 13:52:53.703
+!MESSAGE Connected to 127.0.0.1 on port 2332.
+
+!ENTRY com.nxp.mcuxpresso.core.debug 1 0 2024-03-23 13:52:54.556
+!MESSAGE Telnet session connected on port 2333->56092 @ 127.0.0.1
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:52:55.993
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:53:02.384
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 13:53:09.869
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:06:04.117
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:06:13.521
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:06:29.648
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:07:20.281
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:07:21.418
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:07:33.179
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.dsf 4 10001 2024-03-23 14:23:18.051
+!MESSAGE Target not available.
+
+!ENTRY org.eclipse.cdt.core 4 0 2024-03-23 18:18:05.106
+!MESSAGE Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.core.CCorePlugin.getCProjectDescription(CCorePlugin.java:881)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigInfoFactory2$ScannerConfigInfoSet.load(ScannerConfigInfoFactory2.java:102)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigInfoFactory2$ScannerConfigInfoSet.<init>(ScannerConfigInfoFactory2.java:96)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigInfoFactory2.createInfoSet(ScannerConfigInfoFactory2.java:1373)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigProfileManager.createScannerConfigBuildInfo2Set(ScannerConfigProfileManager.java:223)
+	at org.eclipse.cdt.build.internal.core.scannerconfig2.CfgScannerConfigInfoFactory2$CfgInfo.getContainer(CfgScannerConfigInfoFactory2.java:118)
+	at org.eclipse.cdt.build.internal.core.scannerconfig2.CfgScannerConfigInfoFactory2$CfgInfo.createMap(CfgScannerConfigInfoFactory2.java:144)
+	at org.eclipse.cdt.build.internal.core.scannerconfig2.CfgScannerConfigInfoFactory2$CfgInfo.getInfo(CfgScannerConfigInfoFactory2.java:83)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.getContextInfo(CfgDiscoveredPathManager.java:433)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.getContextInfo(CfgDiscoveredPathManager.java:418)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.getDiscoveredInfo(CfgDiscoveredPathManager.java:168)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ProfileInfoProvider.getEntryValues(ProfileInfoProvider.java:68)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.BuildEntryStorage.getDiscoveredEntries(BuildEntryStorage.java:203)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.BuildEntryStorage.putEntriesToLevel(BuildEntryStorage.java:193)
+	at org.eclipse.cdt.core.settings.model.util.AbstractEntryStorage.initCache(AbstractEntryStorage.java:74)
+	at org.eclipse.cdt.core.settings.model.util.AbstractEntryStorage.getEntries(AbstractEntryStorage.java:37)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.BuildLanguageData.getEntries(BuildLanguageData.java:163)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultLanguageData.getEntriesToCopy(CDefaultLanguageData.java:100)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultLanguageData.createStore(CDefaultLanguageData.java:91)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultLanguageData.copySettingsFrom(CDefaultLanguageData.java:84)
+	at org.eclipse.cdt.internal.core.settings.model.CLanguageSettingCache.copySettingsFrom(CLanguageSettingCache.java:49)
+	at org.eclipse.cdt.internal.core.settings.model.CLanguageSettingCache.<init>(CLanguageSettingCache.java:38)
+	at org.eclipse.cdt.internal.core.settings.model.CFolderDescriptionCache.copyLanguageData(CFolderDescriptionCache.java:82)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultFolderData.copyDataFrom(CDefaultFolderData.java:60)
+	at org.eclipse.cdt.internal.core.settings.model.CFolderDescriptionCache.<init>(CFolderDescriptionCache.java:40)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.copyFolderData(CConfigurationDescriptionCache.java:242)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultConfigurationData.copySettingsFrom(CDefaultConfigurationData.java:117)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:154)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:510)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:240)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:427)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:409)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:403)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:396)
+	at org.eclipse.cdt.internal.core.language.settings.providers.LanguageSettingsScannerInfoProvider.getScannerInformation(LanguageSettingsScannerInfoProvider.java:78)
+	at org.eclipse.cdt.internal.core.language.settings.providers.LanguageSettingsScannerInfoProvider.getScannerInformation(LanguageSettingsScannerInfoProvider.java:1)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getScannerInfo(TranslationUnit.java:1070)
+	at org.eclipse.cdt.internal.core.pdom.indexer.ProjectIndexerInputAdapter.getBuildConfiguration(ProjectIndexerInputAdapter.java:160)
+	at org.eclipse.cdt.internal.core.pdom.AbstractIndexerTask.getScannerInfo(AbstractIndexerTask.java:1030)
+	at org.eclipse.cdt.internal.core.pdom.AbstractIndexerTask.parseLinkage(AbstractIndexerTask.java:909)
+	at org.eclipse.cdt.internal.core.pdom.AbstractIndexerTask.runTask(AbstractIndexerTask.java:572)
+	at org.eclipse.cdt.internal.core.pdom.indexer.PDOMIndexerTask.run(PDOMIndexerTask.java:164)
+	at org.eclipse.cdt.internal.core.pdom.indexer.PDOMUpdateTask.run(PDOMUpdateTask.java:96)
+	at org.eclipse.cdt.internal.core.pdom.PDOMIndexerJob.run(PDOMIndexerJob.java:160)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2024-03-23 18:18:05.108
+!MESSAGE An internal error occurred during: "C/C++ Indexer".
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.core.CCorePlugin.getCProjectDescription(CCorePlugin.java:881)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigInfoFactory2$ScannerConfigInfoSet.load(ScannerConfigInfoFactory2.java:102)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigInfoFactory2$ScannerConfigInfoSet.<init>(ScannerConfigInfoFactory2.java:96)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigInfoFactory2.createInfoSet(ScannerConfigInfoFactory2.java:1373)
+	at org.eclipse.cdt.make.internal.core.scannerconfig2.ScannerConfigProfileManager.createScannerConfigBuildInfo2Set(ScannerConfigProfileManager.java:223)
+	at org.eclipse.cdt.build.internal.core.scannerconfig2.CfgScannerConfigInfoFactory2$CfgInfo.getContainer(CfgScannerConfigInfoFactory2.java:118)
+	at org.eclipse.cdt.build.internal.core.scannerconfig2.CfgScannerConfigInfoFactory2$CfgInfo.createMap(CfgScannerConfigInfoFactory2.java:144)
+	at org.eclipse.cdt.build.internal.core.scannerconfig2.CfgScannerConfigInfoFactory2$CfgInfo.getInfo(CfgScannerConfigInfoFactory2.java:83)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.getContextInfo(CfgDiscoveredPathManager.java:433)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.getContextInfo(CfgDiscoveredPathManager.java:418)
+	at org.eclipse.cdt.build.internal.core.scannerconfig.CfgDiscoveredPathManager.getDiscoveredInfo(CfgDiscoveredPathManager.java:168)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ProfileInfoProvider.getEntryValues(ProfileInfoProvider.java:68)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.BuildEntryStorage.getDiscoveredEntries(BuildEntryStorage.java:203)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.BuildEntryStorage.putEntriesToLevel(BuildEntryStorage.java:193)
+	at org.eclipse.cdt.core.settings.model.util.AbstractEntryStorage.initCache(AbstractEntryStorage.java:74)
+	at org.eclipse.cdt.core.settings.model.util.AbstractEntryStorage.getEntries(AbstractEntryStorage.java:37)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.BuildLanguageData.getEntries(BuildLanguageData.java:163)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultLanguageData.getEntriesToCopy(CDefaultLanguageData.java:100)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultLanguageData.createStore(CDefaultLanguageData.java:91)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultLanguageData.copySettingsFrom(CDefaultLanguageData.java:84)
+	at org.eclipse.cdt.internal.core.settings.model.CLanguageSettingCache.copySettingsFrom(CLanguageSettingCache.java:49)
+	at org.eclipse.cdt.internal.core.settings.model.CLanguageSettingCache.<init>(CLanguageSettingCache.java:38)
+	at org.eclipse.cdt.internal.core.settings.model.CFolderDescriptionCache.copyLanguageData(CFolderDescriptionCache.java:82)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultFolderData.copyDataFrom(CDefaultFolderData.java:60)
+	at org.eclipse.cdt.internal.core.settings.model.CFolderDescriptionCache.<init>(CFolderDescriptionCache.java:40)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.copyFolderData(CConfigurationDescriptionCache.java:242)
+	at org.eclipse.cdt.core.settings.model.extension.impl.CDefaultConfigurationData.copySettingsFrom(CDefaultConfigurationData.java:117)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:154)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:510)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:240)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:427)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:409)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:403)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:396)
+	at org.eclipse.cdt.internal.core.language.settings.providers.LanguageSettingsScannerInfoProvider.getScannerInformation(LanguageSettingsScannerInfoProvider.java:78)
+	at org.eclipse.cdt.internal.core.language.settings.providers.LanguageSettingsScannerInfoProvider.getScannerInformation(LanguageSettingsScannerInfoProvider.java:1)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getScannerInfo(TranslationUnit.java:1070)
+	at org.eclipse.cdt.internal.core.pdom.indexer.ProjectIndexerInputAdapter.getBuildConfiguration(ProjectIndexerInputAdapter.java:160)
+	at org.eclipse.cdt.internal.core.pdom.AbstractIndexerTask.getScannerInfo(AbstractIndexerTask.java:1030)
+	at org.eclipse.cdt.internal.core.pdom.AbstractIndexerTask.parseLinkage(AbstractIndexerTask.java:909)
+	at org.eclipse.cdt.internal.core.pdom.AbstractIndexerTask.runTask(AbstractIndexerTask.java:572)
+	at org.eclipse.cdt.internal.core.pdom.indexer.PDOMIndexerTask.run(PDOMIndexerTask.java:164)
+	at org.eclipse.cdt.internal.core.pdom.indexer.PDOMUpdateTask.run(PDOMUpdateTask.java:96)
+	at org.eclipse.cdt.internal.core.pdom.PDOMIndexerJob.run(PDOMIndexerJob.java:160)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)

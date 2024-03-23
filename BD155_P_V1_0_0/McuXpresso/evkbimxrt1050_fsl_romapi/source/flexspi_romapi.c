@@ -810,9 +810,10 @@ void ReadFromPendrive(void)
 //	error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
-//	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
+	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEN.hex"), FA_READ | FA_OPEN_EXISTING);
-	error = f_open(&g_fileObject1,_T("1:VMSEI.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSEI.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSEU.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEP.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSP0.hex"), FA_READ | FA_OPEN_EXISTING);
@@ -1101,6 +1102,7 @@ void ReadFromPendrive(void)
 	/* Unregister work area prior to discard it */
 	f_mount(0, "1:", 0);
 
+	USB_HostDeinit(&g_HostHandle);
 	// Perform the jump to the desired location in HyperFlash memory
 	jump_to_hyperflash_location(jump_address);
 }
@@ -1189,9 +1191,9 @@ static OSA_SR_ALLOC();
 void jump_to_hyperflash_location(uint32_t applicationAddress)
 {
 	uint32_t stackPointer;
+
 	// Turn off global interrupt
 	OSA_ENTER_CRITICAL();
-
 	// Shutdown microseconds driver.
 //	    PIT->CHANNEL[1].TCTRL = 0; // stop timer 1
 //	    PIT->CHANNEL[0].TCTRL = 0; // stop timer 1
@@ -1226,7 +1228,7 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 	SCB_DisableICache();
 
 	// Restore global interrupt.
-	 __enable_irq();
+	// __enable_irq();
 
 	// Memory barriers for good measure.
 	__ISB();
@@ -1236,7 +1238,8 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 	__DMB();
 
 	// Relocate vector table.
-	SCB->VTOR = (__IOM uint32_t)0x60002305;//0x60001000;
+	SCB->VTOR = (__IOM uint32_t)0x60001000;//0x60001000;
+//	SCB->VTOR = 0;
 
 //	stackPointer = 0x20020000;//DTC
 //	stackPointer = 0x20000;//ITC
@@ -1255,6 +1258,8 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 
 	//Jump to the application.
 	farewellBootloader();
+
+//	APPVTAB->Reset_Handler();
 
 	    // Program execution will never reach this line.
 #if 0
@@ -1280,7 +1285,7 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 //    uint32_t *new_ivt = (uint32_t *)NEW_IVT_LOCATION;
 //
 //    // Copy the IVT to the new location
-//#define NVIC_NUM_VECTORS 16
+//#define NVIC_NUM_VECTORS 0x400
 //    for (int i = 0; i < NVIC_NUM_VECTORS; i++) {
 //        new_ivt[i] = old_ivt[i];
 //    }
