@@ -1,6 +1,0 @@
-"Task Aware Debugger for GDB" version 11.6.1 (202207200623)
-(c) 2016-2022 NXP Semiconductors, Inc.
-==================================
-15:56:36.824 INFO: [ZephyrRTOS] D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\VMS_Display_V0\Debug\.config file could not be read
-15:56:36.824 INFO: [TadModel] DSF session ID 18 has started.
-15:56:46.752 INFO: [TadModel] DSF session ID 18 has ended.

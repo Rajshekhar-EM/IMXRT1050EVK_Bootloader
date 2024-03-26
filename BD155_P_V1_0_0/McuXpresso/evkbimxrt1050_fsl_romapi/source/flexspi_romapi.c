@@ -33,6 +33,8 @@
 #include "usb_phy.h"
 #include "app.h"
 
+#include "fsl_lpuart.h"
+
 extern uint8_t usb_attached;
 
 /*******************************************************************************
@@ -274,9 +276,11 @@ static void USB_HostApplicationInit(void)
 
 #define BUFFER_LEN 				  	FLASH_PAGE_SIZE
 
-#define APP_WRITE_START_ADDR	  	0//0x80000
+//#define APP_WRITE_START_ADDR	  	0
+#define APP_WRITE_START_ADDR	  	0x80000
 // Define the address to jump to in HyperFlash memory
-#define JUMP_ADDRESS  				0x6002305//0x60080305
+//#define JUMP_ADDRESS  			0x60002305
+#define JUMP_ADDRESS  				0x60080305
 
 #define DATA_RECORD					0x00
 #define E_O_F						0x01
@@ -805,12 +809,14 @@ void ReadFromPendrive(void)
 	pendrive_filename = pendrive_filename_creation("DataLogging");
 	error = f_open(&g_fileObject1,_T(pendrive_filename), FA_WRITE | FA_CREATE_ALWAYS | FA_OPEN_EXISTING);
 	*/
+//	error = f_open(&g_fileObject1,_T("1:NEW.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:pwm.hex"), FA_READ | FA_OPEN_EXISTING);
-//	error = f_open(&g_fileObject1,_T("1:led.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:led0.hex"), FA_READ | FA_OPEN_EXISTING);
+	error = f_open(&g_fileObject1,_T("1:led8.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS_ND.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSE.hex"), FA_READ | FA_OPEN_EXISTING);
-	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSE0.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEN.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEI.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSEU.hex"), FA_READ | FA_OPEN_EXISTING);
@@ -818,6 +824,7 @@ void ReadFromPendrive(void)
 //	error = f_open(&g_fileObject1,_T("1:VMSP.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMSP0.hex"), FA_READ | FA_OPEN_EXISTING);
 //	error = f_open(&g_fileObject1,_T("1:VMS_BH60.hex"), FA_READ | FA_OPEN_EXISTING);
+//	error = f_open(&g_fileObject1,_T("1:VMSP8.hex"), FA_READ | FA_OPEN_EXISTING);
 
 	if(error == FR_OK)
 	{
@@ -1102,7 +1109,6 @@ void ReadFromPendrive(void)
 	/* Unregister work area prior to discard it */
 	f_mount(0, "1:", 0);
 
-	USB_HostDeinit(&g_HostHandle);
 	// Perform the jump to the desired location in HyperFlash memory
 	jump_to_hyperflash_location(jump_address);
 }
@@ -1187,10 +1193,26 @@ uint8_t ASCII2HEX(uint8_t character)
 	return mem_sel_data;
 }
 static OSA_SR_ALLOC();
+extern void _vStackTop(void);
 	// Function to perform the jump
 void jump_to_hyperflash_location(uint32_t applicationAddress)
 {
+	PRINTF("Jump to application\r\n");
 	uint32_t stackPointer;
+
+	/*
+	 USB_HostDeinit(&g_HostHandle);
+
+	LPUART_Deinit(LPUART1);
+	LPUART_DisableInterrupts(LPUART1,kLPUART_TxDataRegEmptyInterruptEnable | kLPUART_RxDataRegFullInterruptEnable);
+
+    // Disable USB clock gate
+//	    CLOCK_DisableClock(kCLOCK_Usb1);
+
+    CLOCK_DisableClock(kCLOCK_Usdhc1);
+
+    CLOCK_DisableClock(kCLOCK_Usdhc2);
+    */
 
 	// Turn off global interrupt
 	OSA_ENTER_CRITICAL();
@@ -1238,20 +1260,27 @@ void jump_to_hyperflash_location(uint32_t applicationAddress)
 	__DMB();
 
 	// Relocate vector table.
-	SCB->VTOR = (__IOM uint32_t)0x60001000;//0x60001000;
-//	SCB->VTOR = 0;
+//	SCB->VTOR = (__IOM uint32_t)0x60080000;//0x60002000;//0x20020000;//0x60001000;//0x60001000;
+	SCB->VTOR = (__IOM uint32_t)0;
 
+//	stackPointer = 0x616eab08;
 //	stackPointer = 0x20020000;//DTC
 //	stackPointer = 0x20000;//ITC
-	stackPointer = 0x60002305;
+//	stackPointer = 0x60002305;
+//	stackPointer = 0x60080305;
 //	stackPointer = 0x305;//ITC
 	// Set stack pointers to the application stack pointer.
-	__set_MSP(stackPointer);
-	__set_PSP(stackPointer);
+//	__set_MSP(stackPointer);
+//	__set_PSP(stackPointer);
 
 
 	// Restore global interrupt.
-	 __enable_irq();
+//	 __enable_irq();
+//	 __disable_irq();
+//    __asm volatile ("cpsid i");
+//    __asm volatile ("MSR MSP, %0" : : "r" (&_vStackTop) : );
+//    __asm volatile ("MSR MSP, %0" : : "r" (0x60002000) : );//(0x60002305)
+//    __asm volatile ("MSR MSP, %0" : : "r" (0x305) : );
 
 	static void (*farewellBootloader)(void) = 0;
 	farewellBootloader = (void (*)(void))JUMP_ADDRESS;//applicationAddress
@@ -1394,7 +1423,7 @@ void funcDelayUs(uint32_t llTick)
 int main(void)
 {
 	bl_pwr_on = 1;
-    //BOARD_ConfigMPU();
+    BOARD_ConfigMPU();
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
     USB_HostApplicationInit();
@@ -1402,7 +1431,7 @@ int main(void)
     BOARD_SetupFlexSpiClock();
 #endif
     BOARD_InitDebugConsole();
-    //SysTick_Config(SystemCoreClock); //1ms systick
+//    SysTick_Config(SystemCoreClock); //1ms systick
 #if 0
     status_t status;
     uint32_t i = 0U;
@@ -1536,7 +1565,8 @@ int main(void)
     return 0;
 
 #endif
-    dummy();
+
+	dummy();
 }
 
 void dummy(void)

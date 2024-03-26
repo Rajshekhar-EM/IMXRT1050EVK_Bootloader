@@ -36,6 +36,7 @@ source/flexspi_romapi.o source/flexspi_romapi.d: \
  ../source/app.h \
  D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\fatfs\source/ff.h \
  D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\source/ffconf.h \
+ D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\drivers/fsl_lpuart.h \
  D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\drivers/fsl_romapi.h \
  D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\utilities/fsl_debug_console.h \
  D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\drivers/fsl_cache.h
@@ -76,6 +77,7 @@ D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\u
 ../source/app.h:
 D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\fatfs\source/ff.h:
 D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\source/ffconf.h:
+D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\drivers/fsl_lpuart.h:
 D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\drivers/fsl_romapi.h:
 D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\utilities/fsl_debug_console.h:
 D:\IMXRT1050EVKB_Bootloader\BD155_P_V1_0_0\McuXpresso\evkbimxrt1050_fsl_romapi\drivers/fsl_cache.h:
